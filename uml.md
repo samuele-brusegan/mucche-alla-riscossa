@@ -1,68 +1,116 @@
 ```mermaid
 
 classDiagram
-    %% Pattern Singleton per la gestione del gioco
+    %% --- PATTERN SINGLETON ---
     class GameController {
         -static GameController instance
         -int balleDiFieno
+        -int saluteStalla
         -GameController()
         +static getInstance() GameController
-        +aggiungiRisorsa(quantita: int) void
-        +rimuoviRisorsa(quantita: int) void
-        +gameOver() void
+        +aggiungiFieno(qta: int) void
+        +sottraiFieno(qta: int) void
+        +getBalleDiFieno() int
     }
 
-    %% Pattern Observer per il sistema di danni/eventi
+    %% --- PATTERN OBSERVER ---
     class Subject {
         <<interface>>
-        +attach(observer: Observer) void
-        +detach(observer: Observer) void
+        +attach(obs: Observer) void
+        +detach(obs: Observer) void
         +notifyObservers() void
     }
 
     class Observer {
         <<interface>>
-        +update(event: String) void
+        +update(messaggio: String) void
     }
 
     class StallaTorreControllo {
-        +update(event: String) void
+        -int integritaSistema
+        +update(messaggio: String) void
     }
 
-    %% Classi del Dominio (dal documento)
+    %% --- DIFENSORI (RESISTENZA BOVINA) ---
     class UnitaBovina {
         <<abstract>>
         #String nome
         #int costoFieno
+        #double raggioAzione
         +attacca() void*
     }
 
     class VitellinoVedeo {
+        -final String arma = "Zampa di Balsa"
         +attacca() void
+    }
+
+    class MuccaBeatrice {
+        -double rallentamentoBoassa
+        +piazzaTrappola() void
+    }
+
+    class MuccaCornutaAssunta {
+        -int dannoCarica
+        +incorna() void
     }
 
     class MammaRosetta {
-        +attacca() void
+        -int velocitaLancio
         +lancioDelVitello() void
     }
 
-    class MoscaMutante {
-        -int salute
-        -double velocita
+    %% --- NEMICI (INSETTI MUTANTI) ---
+    class InsettoMutante {
+        <<abstract>>
+        #int salute
+        #double velocita
+        #boolean arrivatoAlTarget
         +muovi() void
+        +setArrivato() void
     }
 
-    %% Relazioni
-    GameController "1" o-- "0..*" UnitaBovina : gestisce
-    GameController "1" o-- "0..*" MoscaMutante : monitora
+    class ZanzaraElicotterista {
+        -double quotaVolo
+        +volaOltreBalle() void
+    }
+
+    class MosconeCorazzato {
+        -int spessoreGuscioNoce
+        +incassaColpo() void
+    }
+
+    class MoscerinoNinja {
+        -double ampiezzaZigZag
+        +evadi() void
+    }
+
+    class TafanoMinatore {
+        -boolean isSotterraneo
+        +scava() void
+    }
+
+    %% --- RELAZIONI ---
+    %% Generalizzazioni (Ereditarietà)
+    UnitaBovina <|-- VitellinoVedeo
+    UnitaBovina <|-- MuccaBeatrice
+    UnitaBovina <|-- MuccaCornutaAssunta
+    UnitaBovina <|-- MammaRosetta
+
+    InsettoMutante <|-- ZanzaraElicotterista
+    InsettoMutante <|-- MosconeCorazzato
+    InsettoMutante <|-- MoscerinoNinja
+    InsettoMutante <|-- TafanoMinatore
+
+    %% Realizzazioni (Interfacce)
+    Subject <|.. InsettoMutante : implements
+    Observer <|.. StallaTorreControllo : implements
+
+    %% Associazioni e Molteplicità
+    GameController "1" o-- "*" UnitaBovina : schiera >
+    GameController "1" o-- "*" InsettoMutante : gestisce ondata >
+    InsettoMutante "0..*" --> "1" Observer : notifica invasione >
     
-    Subject <|.. MoscaMutante : implementa
-    Observer <|.. StallaTorreControllo : implementa
-    MoscaMutante --> Observer : notifica invasione
-
-    UnitaBovina <|-- VitellinoVedeo : extends
-    UnitaBovina <|-- MammaRosetta : extends
-
-    note for GameController "Singleton: gestisce la valuta\n(Balle di Fieno) e lo stato globale "
-    note for MoscaMutante "Subject: se arriva alla stalla,\nscatta il Fatal Error [cite: 280, 322]"
+    note for GameController "Singleton: Unico punto di\ncontrollo per le risorse (Fieno)"
+    note for StallaTorreControllo "Observer: Se un insetto arriva,\nscatta il Fatal Error"
 ```
