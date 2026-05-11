@@ -45,17 +45,17 @@ classDiagram
         +attacca() void
     }
 
-    class MuccaBeatrice {
+    class Mucca {
         -double rallentamentoBoassa
         +piazzaTrappola() void
     }
 
-    class MuccaCornutaAssunta {
+    class MuccaCornuta {
         -int dannoCarica
         +incorna() void
     }
 
-    class MammaRosetta {
+    class Vacca {
         -int velocitaLancio
         +lancioDelVitello() void
     }
@@ -70,22 +70,22 @@ classDiagram
         +setArrivato() void
     }
 
-    class ZanzaraElicotterista {
+    class Zanzara {
         -double quotaVolo
         +volaOltreBalle() void
     }
 
-    class MosconeCorazzato {
+    class Moscone {
         -int spessoreGuscioNoce
         +incassaColpo() void
     }
 
-    class MoscerinoNinja {
+    class Moscerino {
         -double ampiezzaZigZag
         +evadi() void
     }
 
-    class TafanoMinatore {
+    class GranTafano {
         -boolean isSotterraneo
         +scava() void
     }
@@ -93,14 +93,14 @@ classDiagram
     %% --- RELAZIONI ---
     %% Generalizzazioni (Ereditarietà)
     UnitaBovina <|-- VitellinoVedeo
-    UnitaBovina <|-- MuccaBeatrice
-    UnitaBovina <|-- MuccaCornutaAssunta
-    UnitaBovina <|-- MammaRosetta
+    UnitaBovina <|-- Mucca
+    UnitaBovina <|-- MuccaCornuta
+    UnitaBovina <|-- Vacca
 
-    InsettoMutante <|-- ZanzaraElicotterista
-    InsettoMutante <|-- MosconeCorazzato
-    InsettoMutante <|-- MoscerinoNinja
-    InsettoMutante <|-- TafanoMinatore
+    InsettoMutante <|-- Zanzara
+    InsettoMutante <|-- Moscone
+    InsettoMutante <|-- Moscerino
+    InsettoMutante <|-- GranTafano
 
     %% Realizzazioni (Interfacce)
     Subject <|.. InsettoMutante : implements
