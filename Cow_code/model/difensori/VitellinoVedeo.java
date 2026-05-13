@@ -1,3 +1,5 @@
+package MuccheAllaRiscossa.model.difensori;
+
 /** VitellinoVedeo:
  * Spara "Zampe di Balsa" agli insetti nella sua corsia.
  * È la mucca più economica e facile da usare(diciamo livello base).
@@ -32,3 +34,4 @@ public class VitellinoVedeo extends UnitaBovina {
 
     public String getArma()        { return arma; }
     public int    getDannoPerColpo() { return dannoPerColpo; }
+}

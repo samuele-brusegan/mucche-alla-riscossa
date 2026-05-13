@@ -1,4 +1,6 @@
-/** MuccaCornutaAssunta
+package MuccheAllaRiscossa.model.difensori;
+
+/** MuccaCornuta
  * Non attacca a distanza: aspetta che un insetto entri nella sua cella
  * e poi lo incorna con danni devastanti. Ha molta vita per fare da muro.
  */
@@ -7,7 +9,7 @@ public class MuccaCornuta extends UnitaBovina {
 
     private int dannoCarica;
 
-    public MuccaCornutaAssunta() {
+    public MuccaCornuta() {
         super("Mucca Cornuta Assunta", 125, 0.5, 300);
         this.dannoCarica = 80;
     }

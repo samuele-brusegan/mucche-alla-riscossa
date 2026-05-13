@@ -1,3 +1,5 @@
+package MuccheAllaRiscossa.model.difensori;
+
 /** Vacca
  * Colpisce tutti i nemici nella sua corsia con danno elevato.
  * È la più potente (e più cara)
@@ -29,3 +31,4 @@ public class Vacca extends UnitaBovina {
 
     public int getVelocitaLancio() { return velocitaLancio; }
     public int getDannoVitello()   { return dannoVitello; }
+}
