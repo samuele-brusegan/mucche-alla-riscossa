@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import MuccheAllaRiscossa.model.gameplay.Proiettile;
+import MuccheAllaRiscossa.pattern.GameEvent;
 import MuccheAllaRiscossa.pattern.Observer;
 
 /**
@@ -15,11 +16,11 @@ import MuccheAllaRiscossa.pattern.Observer;
  * del gioco (tipicamente gli InsettoMutante) e reagisce di conseguenza
  * (attaccando, subendo danno, ecc.).
  *
- * Protocollo dei messaggi attesi su update():
- *   - "INSETTO_IN_RAGGIO[:info]"  -> l'unità entra in stato IN_ATTACCO e chiama attacca()
- *   - "DANNO:<n>"                 -> l'unità subisce <n> punti di danno
- *   - "FINE_PARTITA"              -> l'unità smette di reagire
- *   - altri messaggi              -> ignorati (estendibile dal team)
+ * Eventi gestiti da onEvent():
+ *   - GameEvent.InsettoInRaggio -> l'unità entra in IN_ATTACCO e chiama attacca()
+ *   - GameEvent.Danno           -> l'unità subisce danno
+ *   - GameEvent.FinePartita     -> l'unità smette di reagire
+ *   - altri eventi              -> ignorati (estendibile dal team)
  */
 public abstract class UnitaBovina implements Observer {
 
@@ -103,46 +104,29 @@ public abstract class UnitaBovina implements Observer {
     }
 
     /**
-     * Reagisce a una notifica del Subject osservato.
+     * Reagisce a un evento del Subject osservato.
      *
-     * Le unità morte ignorano qualsiasi messaggio. Per gli altri messaggi,
-     * il dispatching avviene confrontando il prefisso del messaggio col
-     * protocollo concordato. Nuovi eventi possono essere aggiunti senza
-     * rompere i client esistenti grazie al ramo di default che ignora.
-     *
-     * @param messaggio messaggio inviato dal Subject (non null).
+     * Le unità morte ignorano qualsiasi evento. Gli altri vengono dispatchati
+     * via pattern matching; eventi non gestiti sono ignorati di proposito,
+     * così l'enum si può estendere senza rompere i client esistenti.
      */
     @Override
-    public void update(String messaggio) {
-        if (messaggio == null || stato == StatoUnita.MORTA) {
+    public void onEvent(GameEvent evento) {
+        if (evento == null || stato == StatoUnita.MORTA) {
             return;
         }
-
-        if (messaggio.startsWith("INSETTO_IN_RAGGIO")) {
-            // attacca solo se il cooldown e a zero
-            if (cooldown == 0) {
-                this.stato = StatoUnita.IN_ATTACCO;
-                attacca();
-                this.cooldown = cooldownMax;
+        switch (evento) {
+            case GameEvent.InsettoInRaggio ignored -> {
+                if (cooldown == 0) {
+                    this.stato = StatoUnita.IN_ATTACCO;
+                    attacca();
+                    this.cooldown = cooldownMax;
+                }
             }
-            return;
+            case GameEvent.Danno d   -> riceviDanno(d.quantita());
+            case GameEvent.FinePartita ignored -> this.stato = StatoUnita.MORTA;
+            default -> { /* eventi non rilevanti per le unità: ignorati */ }
         }
-
-        if (messaggio.startsWith("DANNO:")) {
-            try {
-                int danno = Integer.parseInt(messaggio.substring("DANNO:".length()).trim());
-                riceviDanno(danno);
-            } catch (NumberFormatException e) {
-                System.err.println("[" + nome + "] messaggio DANNO malformato: " + messaggio);
-            }
-            return;
-        }
-
-        if (messaggio.equals("FINE_PARTITA")) {
-            this.stato = StatoUnita.MORTA; // smette di reagire alle notifiche successive
-            return;
-        }
-        // messaggi sconosciuti: ignorati di proposito (estendibile dal team)
     }
 
 
