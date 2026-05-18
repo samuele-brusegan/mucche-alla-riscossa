@@ -74,7 +74,7 @@ public class StallaTorreControllo implements Observer {
                     }
                 }
             } catch (NumberFormatException e) {
-                System.err.println("[STALLA] DANNO_STALLA malformato: " + message);
+                System.err.println("[STALLA] DANNO_STALLA malformato: " + messaggio);
             }
             return;
         }
