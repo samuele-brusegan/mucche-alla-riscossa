@@ -53,7 +53,7 @@ Diagramma UML completo in [`docs/uml.md`](./docs/uml.md).
 
 ## Build & Run
 
-Il progetto usa **Maven**. Servono JDK 17+ e Maven 3.9+.
+Il progetto usa **Maven**. Servono JDK 21+ e Maven 3.9+.
 
 ```bash
 # Compilazione
@@ -69,7 +69,7 @@ mvn exec:java
 ## Continuous Integration
 
 Ogni push e pull request su `main` esegue build e test su GitHub Actions
-(JDK 17, Ubuntu) — vedi [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
+(JDK 21, Ubuntu) — vedi [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 ## Struttura del repository
 
