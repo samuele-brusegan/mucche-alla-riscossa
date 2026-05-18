@@ -2,6 +2,7 @@ package MuccheAllaRiscossa.model.difensori;
 
 import MuccheAllaRiscossa.model.gameplay.BoassaEsplosiva;
 import MuccheAllaRiscossa.model.gameplay.Proiettile;
+import MuccheAllaRiscossa.pattern.GameEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ class UnitaBovinaTest {
     void mortaIgnoraUpdate() {
         VitellinoVedeo v = new VitellinoVedeo();
         v.riceviDanno(9999);
-        v.update("INSETTO_IN_RAGGIO");
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         // se fosse viva sarebbe IN_ATTACCO; resta MORTA
         assertEquals(StatoUnita.MORTA, v.getStato());
     }
@@ -37,7 +38,7 @@ class UnitaBovinaTest {
     @Test
     void updateInsettoInRaggioInnescaAttacco() {
         VitellinoVedeo v = new VitellinoVedeo();
-        v.update("INSETTO_IN_RAGGIO");
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         assertEquals(StatoUnita.IN_ATTACCO, v.getStato());
         assertNotNull(v.getUltimoProiettile());
     }
@@ -45,16 +46,16 @@ class UnitaBovinaTest {
     @Test
     void cooldownImpediscePiuAttacchiConsecutivi() {
         VitellinoVedeo v = new VitellinoVedeo();
-        v.update("INSETTO_IN_RAGGIO");
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         Proiettile primo = v.getUltimoProiettile();
-        v.update("INSETTO_IN_RAGGIO"); // cooldown attivo, non spara
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0)); // cooldown attivo, non spara
         assertSame(primo, v.getUltimoProiettile());
     }
 
     @Test
     void tickDecrementaCooldown() {
         VitellinoVedeo v = new VitellinoVedeo();
-        v.update("INSETTO_IN_RAGGIO");
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         int cd = v.getCooldown();
         v.tick();
         assertEquals(cd - 1, v.getCooldown());
@@ -64,35 +65,37 @@ class UnitaBovinaTest {
     void updateDannoApplicaDanno() {
         VitellinoVedeo v = new VitellinoVedeo();
         int prima = v.getVita();
-        v.update("DANNO:15");
+        v.onEvent(new GameEvent.Danno(15));
         assertEquals(prima - 15, v.getVita());
     }
 
     @Test
-    void updateDannoMalformatoNonRompe() {
+    void eventoNonRilevanteVieneIgnorato() {
         VitellinoVedeo v = new VitellinoVedeo();
         int prima = v.getVita();
-        assertDoesNotThrow(() -> v.update("DANNO:non-un-numero"));
+        // un evento informativo non rivolto alle unità: non deve cambiare nulla
+        assertDoesNotThrow(() -> v.onEvent(new GameEvent.MoscerinoEvade(42)));
         assertEquals(prima, v.getVita());
+        assertEquals(StatoUnita.ATTIVA, v.getStato());
     }
 
     @Test
-    void updateNullIgnorato() {
+    void onEventNullIgnorato() {
         VitellinoVedeo v = new VitellinoVedeo();
-        assertDoesNotThrow(() -> v.update(null));
+        assertDoesNotThrow(() -> v.onEvent(null));
     }
 
     @Test
     void finePartitaSpegneUnita() {
         VitellinoVedeo v = new VitellinoVedeo();
-        v.update("FINE_PARTITA");
+        v.onEvent(new GameEvent.FinePartita());
         assertEquals(StatoUnita.MORTA, v.getStato());
     }
 
     @Test
     void muccaPiazzaTrappola() {
         Mucca m = new Mucca();
-        m.update("INSETTO_IN_RAGGIO");
+        m.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         BoassaEsplosiva b = m.getUltimaTrappola();
         assertNotNull(b);
         assertTrue(b.isAttiva());
@@ -101,7 +104,7 @@ class UnitaBovinaTest {
     @Test
     void vaccaCreaProiettileMultiBersaglio() {
         Vacca v = new Vacca();
-        v.update("INSETTO_IN_RAGGIO");
+        v.onEvent(new GameEvent.InsettoInRaggio(0, 0.0));
         assertNotNull(v.getUltimoProiettile());
         assertTrue(v.getUltimoProiettile().isColpisceTutti());
     }

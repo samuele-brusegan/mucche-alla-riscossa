@@ -1,5 +1,6 @@
 package MuccheAllaRiscossa.model.nemici;
 
+import MuccheAllaRiscossa.pattern.GameEvent;
 import MuccheAllaRiscossa.pattern.Observer;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InsettoMutanteTest {
 
-    /** Spy observer che registra tutti i messaggi ricevuti. */
+    /** Spy observer che registra tutti gli eventi ricevuti. */
     private static class SpyObserver implements Observer {
-        final List<String> messaggi = new ArrayList<>();
-        @Override public void update(String m) { messaggi.add(m); }
+        final List<GameEvent> eventi = new ArrayList<>();
+        @Override public void onEvent(GameEvent e) { eventi.add(e); }
     }
 
     @Test
@@ -43,7 +44,7 @@ class InsettoMutanteTest {
         for (int i = 0; i < 1000 && !m.isArrivatoAlTarget(); i++) m.muovi();
 
         assertTrue(m.isArrivatoAlTarget());
-        assertTrue(spy.messaggi.stream().anyMatch(s -> s.startsWith("INVASIONE_STALLA:")));
+        assertTrue(spy.eventi.stream().anyMatch(e -> e instanceof GameEvent.InvasioneStalla));
     }
 
     @Test
@@ -56,7 +57,7 @@ class InsettoMutanteTest {
         for (int i = 0; i < 50 && m.isVivo(); i++) m.subisciDanno(50);
 
         assertFalse(m.isVivo());
-        assertTrue(spy.messaggi.stream().anyMatch(s -> s.startsWith("INSETTO_MORTO:")));
+        assertTrue(spy.eventi.stream().anyMatch(e -> e instanceof GameEvent.InsettoMorto));
     }
 
     @Test
@@ -65,8 +66,8 @@ class InsettoMutanteTest {
         SpyObserver spy = new SpyObserver();
         z.attach(spy);
         z.detach(spy);
-        z.notifyObservers("CIAO");
-        assertTrue(spy.messaggi.isEmpty());
+        z.notifyObservers(new GameEvent.MoscerinoEvade(0));
+        assertTrue(spy.eventi.isEmpty());
     }
 
     @Test
