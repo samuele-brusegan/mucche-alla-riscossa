@@ -1,7 +1,10 @@
 package MuccheAllaRiscossa.model.difensori;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import MuccheAllaRiscossa.model.gameplay.Proiettile;
 import MuccheAllaRiscossa.pattern.Observer;
 
 /**
@@ -47,14 +50,26 @@ public abstract class UnitaBovina implements Observer {
     /** Stato corrente dell'unità (vedi {@link StatoUnita}). */
     protected StatoUnita stato;
 
+    /** Tick rimanenti prima di poter attaccare di nuovo */
+    protected int cooldown;
+
+    /** Valore massimo del cooldown (si resetta a questo dopo ogni attacco) */
+    protected int cooldownMax;
+
+    /** Proiettili pronti da raccogliere (il controller li prende e svuota la lista) */
+    protected List<Proiettile> proiettiliPronti;
+
     /** nelle altre classi richiamo il costruttore tramite super(...)*/
     public UnitaBovina(String nome, int costoFieno, double raggioAzione, int vita) {
-        this.id           = NEXT_ID.getAndIncrement();
-        this.nome         = nome;
-        this.costoFieno   = costoFieno;
-        this.raggioAzione = raggioAzione;
-        this.vita         = vita;
-        this.stato        = StatoUnita.ATTIVA;
+        this.id                = NEXT_ID.getAndIncrement();
+        this.nome              = nome;
+        this.costoFieno        = costoFieno;
+        this.raggioAzione      = raggioAzione;
+        this.vita              = vita;
+        this.stato             = StatoUnita.ATTIVA;
+        this.cooldown          = 0;
+        this.cooldownMax       = 3; // di default attacca ogni 3 tick
+        this.proiettiliPronti  = new ArrayList<>();
     }
 
     /** Metodo astratto che ogni mucca avrà differente*/
@@ -78,6 +93,16 @@ public abstract class UnitaBovina implements Observer {
     }
 
     /**
+     * Decrementa il cooldown di 1. Va chiamato dal controller ad ogni tick
+     * per gestire la frequenza di attacco delle unita.
+     */
+    public void tick() {
+        if (cooldown > 0) {
+            cooldown--;
+        }
+    }
+
+    /**
      * Reagisce a una notifica del Subject osservato.
      *
      * Le unità morte ignorano qualsiasi messaggio. Per gli altri messaggi,
@@ -94,8 +119,12 @@ public abstract class UnitaBovina implements Observer {
         }
 
         if (messaggio.startsWith("INSETTO_IN_RAGGIO")) {
-            this.stato = StatoUnita.IN_ATTACCO;
-            attacca();
+            // attacca solo se il cooldown e a zero
+            if (cooldown == 0) {
+                this.stato = StatoUnita.IN_ATTACCO;
+                attacca();
+                this.cooldown = cooldownMax;
+            }
             return;
         }
 
@@ -125,7 +154,16 @@ public abstract class UnitaBovina implements Observer {
     public int          getColonna()      { return colonna; }
     public int          getVita()         { return vita; }
     public StatoUnita   getStato()        { return stato; }
+    public int          getCooldown()     { return cooldown; }
 
     public void setRiga(int riga)         { this.riga = riga; }
     public void setColonna(int colonna)   { this.colonna = colonna; }
+    public void setCooldownMax(int max)   { this.cooldownMax = max; }
+
+    /** Restituisce i proiettili pronti e svuota la lista */
+    public List<Proiettile> raccogliProiettili() {
+        List<Proiettile> copia = new ArrayList<>(proiettiliPronti);
+        proiettiliPronti.clear();
+        return copia;
+    }
 }

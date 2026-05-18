@@ -1,5 +1,7 @@
 package MuccheAllaRiscossa.model.difensori;
 
+import MuccheAllaRiscossa.model.nemici.InsettoMutante;
+
 /** MuccaCornuta
  * Non attacca a distanza: aspetta che un insetto entri nella sua cella
  * e poi lo incorna con danni devastanti. Ha molta vita per fare da muro.
@@ -21,9 +23,17 @@ public class MuccaCornuta extends UnitaBovina {
         incorna();
     }
 
+    /** Versione senza parametri: stampa l'attacco (retrocompatibilita) */
     public void incorna() {
         System.out.println("[" + nome + "] CORNATA! Danno corpo a corpo: " + dannoCarica);
-        // Todo: trovare InsettoMutante nella stessa cella e applicare dannoCarica
+    }
+
+    /** Versione con bersaglio: infligge danno diretto all'insetto */
+    public void incorna(InsettoMutante insetto) {
+        System.out.println("[" + nome + "] CORNATA! Danno corpo a corpo: " + dannoCarica);
+        if (insetto != null) {
+            insetto.subisciDanno(dannoCarica);
+        }
     }
 
     public int getDannoCarica() { return dannoCarica; }
