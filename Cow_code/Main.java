@@ -1,47 +1,58 @@
 package MuccheAllaRiscossa;
 
 import MuccheAllaRiscossa.controller.GameController;
-import MuccheAllaRiscossa.model.difensori.Mucca;
-import MuccheAllaRiscossa.model.difensori.MuccaCornuta;
-import MuccheAllaRiscossa.model.difensori.Vacca;
-import MuccheAllaRiscossa.model.difensori.VitellinoVedeo;
-import MuccheAllaRiscossa.model.nemici.GranTafano;
-import MuccheAllaRiscossa.model.nemici.Moscerino;
-import MuccheAllaRiscossa.model.nemici.Moscone;
-import MuccheAllaRiscossa.model.nemici.Zanzara;
+import MuccheAllaRiscossa.view.*;
+import javax.swing.SwingUtilities;
 
 /**
- * Entry point del gioco. Per ora esegue una demo testuale che mostra
- * il pattern Observer in funzione: insetti che avanzano e notificano
- * la stalla quando la raggiungono.
+ * Entry point del gioco adattato all'infrastruttura grafica Swing.
+ * Configura la finestra principale, tutti i pannelli di gioco, lo SlideManager
+ * e attiva il binding dei callback per la gestione degli errori fatali/danni.
  */
 public final class Main {
 
     public static void main(String[] args) {
-        GameController gc = GameController.getInstance();
-        gc.aggiungiFieno(500);
+        // Avviamo l'interfaccia grafica nel thread sicuro di Swing (EDT)
+        SwingUtilities.invokeLater(() -> {
+            // 1. Creazione della finestra principale
+            GameWindow window = new GameWindow();
 
-        // schiera qualche difensore
-        gc.schiera(new VitellinoVedeo(), 0, 1);
-        gc.schiera(new Mucca(),          1, 2);
-        gc.schiera(new MuccaCornuta(),   2, 3);
-        gc.schiera(new Vacca(),          3, 4);
+            // 2. Istanziazione dei pannelli di gioco reali
+            MenuPanel menuPanel = new MenuPanel(window);
+            GamePanel gamePanel = new GamePanel(window);
+            GameOverPanel gameOverPanel = new GameOverPanel(window);
+            VittoriaPanel vittoriaPanel = new VittoriaPanel(window);
 
-        // ondata di nemici
-        gc.aggiungiInsetto(new Zanzara(0));
-        gc.aggiungiInsetto(new Moscone(1));
-        gc.aggiungiInsetto(new Moscerino(2));
-        gc.aggiungiInsetto(new GranTafano(3));
+            // 3. Registrazione dei pannelli nel container con il CardLayout
+            window.getMainContainer().add(menuPanel, "MENU");
+            window.getMainContainer().add(gamePanel, "GAME");
+            window.getMainContainer().add(gameOverPanel, "GAME_OVER");
+            window.getMainContainer().add(vittoriaPanel, "VITTORIA");
 
-        System.out.println("=== Inizio partita ===");
-        int tick = 0;
-        while (!gc.isGameOver() && tick < 100) {
-            tick++;
-            System.out.println("--- Tick " + tick + " ---");
-            gc.tick();
-        }
-        System.out.println("=== Fine partita al tick " + tick + " ===");
-        System.out.println("Stalla integrità: " + gc.getStalla().getIntegritaSistema());
-        System.out.println("Fieno residuo:    " + gc.getBalleDiFieno());
+            // 4. Configurazione dello SlideManager globale
+            SlideManager.getInstance().setWindow(window);
+
+            // 5. Configurazione dei callback (Runnable) su StallaTorreControllo
+            // In questo modo, quando la stalla subisce danni o muore, la view risponde subito
+            GameController gc = GameController.getInstance();
+            
+            gc.getStalla().setOnDannoSubito(() -> {
+                // Forza il ridisegno del GamePanel per aggiornare la barra dell'HUD in tempo reale
+                gamePanel.repaint();
+            });
+
+            gc.getStalla().setOnFatalError(() -> {
+                // Ferma il timer del game loop e manda la schermata di Game Over
+                gamePanel.fermaGioco();
+                SlideManager.getInstance().mostra(SlideManager.Slide.GAME_OVER);
+            });
+
+            // 6. Mostriamo il menu iniziale e rendiamo visibile l'applicazione
+            SlideManager.getInstance().mostra(SlideManager.Slide.MENU);
+            window.setVisible(true);
+
+            // Nota: L'avvio effettivo del loop (gamePanel.avviaGioco()) è gestito 
+            // all'interno dei pannelli o al cambio di slide verso la partita reale.
+        });
     }
 }
