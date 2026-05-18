@@ -50,6 +50,8 @@ src/test/java/        # Test JUnit 5
 - **Template Method** — le classi astratte `UnitaBovina` e `InsettoMutante` definiscono lo scheletro del comportamento.
 
 Diagramma UML completo in [`docs/uml.md`](./docs/uml.md).
+Documentazione tecnica dettagliata della codebase in
+[`docs/CODEBASE.md`](./docs/CODEBASE.md).
 
 ## Build & Run
 
