@@ -38,6 +38,12 @@ public abstract class InsettoMutante implements Subject {
     /** Colonna corrente sulla griglia. */
     protected double colonna;
 
+    /** Velocita originale, prima di qualsiasi rallentamento */
+    protected double velocitaBase;
+
+    /** Tick rimanenti di rallentamento (0 = nessun rallentamento attivo) */
+    protected int tickRallentamento;
+
     /** Lista degli osservatori registrati. */
     private final List<Observer> osservatori = new ArrayList<>();
 
@@ -45,9 +51,11 @@ public abstract class InsettoMutante implements Subject {
         this.id               = NEXT_ID.getAndIncrement();
         this.salute           = salute;
         this.velocita         = velocita;
+        this.velocitaBase     = velocita;
         this.riga             = riga;
         this.colonna          = 0.0;
         this.arrivatoAlTarget = false;
+        this.tickRallentamento = 0;
     }
 
     /* ---------- API Subject ---------- */
@@ -93,9 +101,19 @@ public abstract class InsettoMutante implements Subject {
     /**
      * Comportamento di avanzamento specifico della sottoclasse.
      * Per default incrementa colonna in base alla velocità.
+     * Se il rallentamento e attivo, usa la velocita ridotta.
      */
     protected void avanza() {
-        this.colonna += velocita;
+        if (tickRallentamento > 0) {
+            this.colonna += velocita; // velocita gia ridotta dal metodo rallenta()
+            tickRallentamento--;
+            if (tickRallentamento == 0) {
+                // il rallentamento e finito, ripristino la velocita originale
+                this.velocita = velocitaBase;
+            }
+        } else {
+            this.colonna += velocita;
+        }
     }
 
     /** Segna l'insetto come arrivato alla stalla e notifica l'invasione. */
@@ -112,10 +130,22 @@ public abstract class InsettoMutante implements Subject {
         }
     }
 
+    /**
+     * Rallenta l'insetto per un certo numero di tick.
+     * Il fattore indica la percentuale di velocita mantenuta (es. 0.3 = 30%).
+     */
+    public void rallenta(double fattore) {
+        this.velocita = velocitaBase * fattore;
+        this.tickRallentamento = 5; // dura 5 tick
+        System.out.println("[" + getClass().getSimpleName() + "#" + id
+                + "] Rallentato! Velocita: " + velocita + " per " + tickRallentamento + " tick");
+    }
+
     public boolean isVivo()             { return salute > 0; }
     public int     getId()              { return id; }
     public int     getSalute()          { return salute; }
     public double  getVelocita()        { return velocita; }
+    public double  getVelocitaBase()    { return velocitaBase; }
     public int     getRiga()            { return riga; }
     public double  getColonna()         { return colonna; }
     public boolean isArrivatoAlTarget() { return arrivatoAlTarget; }
