@@ -174,8 +174,6 @@ public final class GameController {
         gestisciSistemaOndate();
         gestisciGenerazioneRisorse();
     }
-        unita.removeIf(u -> !u.isViva());
-    }
 
     public boolean isGameOver() { return stalla.isFatalError(); }
 
