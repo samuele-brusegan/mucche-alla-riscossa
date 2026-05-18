@@ -27,18 +27,20 @@ Una piaga di insetti mutanti minaccia la stalla. Sta a te schierare le unità bo
 
 ## Architettura
 
-Il progetto è organizzato secondo il pattern **MVC**:
+Il progetto è organizzato secondo il pattern **MVC** con layout Maven standard:
 
 ```
-Cow_code/
+src/main/java/MuccheAllaRiscossa/
 ├── Main.java
 ├── controller/      # GameController (Singleton)
-├── view/            # StallaTorreControllo, SlideManager
+├── view/            # StallaTorreControllo, SlideManager, pannelli Swing
 ├── model/
 │   ├── difensori/   # Unità bovine
 │   ├── nemici/      # Insetti mutanti
 │   └── gameplay/    # Griglia, Proiettile, BoassaEsplosiva, OndataConfig
 └── pattern/         # Interfacce Subject / Observer
+
+src/test/java/        # Test JUnit 5
 ```
 
 ### Design pattern usati
@@ -47,22 +49,35 @@ Cow_code/
 - **Observer** — gli `InsettoMutante` (Subject) notificano la `StallaTorreControllo` (Observer) quando raggiungono il target.
 - **Template Method** — le classi astratte `UnitaBovina` e `InsettoMutante` definiscono lo scheletro del comportamento.
 
-Diagramma UML completo in [`uml.md`](./uml.md).
+Diagramma UML completo in [`docs/uml.md`](./docs/uml.md).
 
 ## Build & Run
 
-Compilazione e avvio da linea di comando:
+Il progetto usa **Maven**. Servono JDK 17+ e Maven 3.9+.
 
 ```bash
-javac -d out $(find Cow_code -name "*.java")
-java -cp out Main
+# Compilazione
+mvn compile
+
+# Esecuzione test
+mvn test
+
+# Avvio del gioco
+mvn exec:java
 ```
+
+## Continuous Integration
+
+Ogni push e pull request su `main` esegue build e test su GitHub Actions
+(JDK 17, Ubuntu) — vedi [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
 
 ## Struttura del repository
 
-- `Cow_code/` — sorgenti Java
-- `uml.md` — diagramma delle classi (Mermaid)
-- `out/` — output di compilazione
+- `src/main/java/` — sorgenti Java
+- `src/test/java/` — test JUnit 5
+- `docs/uml.md` — diagramma delle classi (Mermaid)
+- `pom.xml` — configurazione Maven
+- `.github/workflows/` — pipeline CI
 - `LICENSE`
 
 ## Licenza
