@@ -141,7 +141,7 @@ public class GamePanel extends JPanel {
         // --- 4. DISEGNO INSETTI MUTANTI (NEMICI) ---
         for (InsettoMutante insetto : GameController.getInstance().getInsetti()) {
             // Se l'insetto espone getX() e getY() continui usiamo quelli, altrimenti usiamo la colonna come approssimazione grafica temporanea
-            int xInsetto = OFFSET_X + (insetto.getColonna() * LARGHEZZA_CELLA) + 20;
+            int xInsetto = OFFSET_X + (int) (insetto.getColonna() * LARGHEZZA_CELLA) + 20;
             int yInsetto = OFFSET_Y + (insetto.getRiga() * ALTEZZA_CELLA) + 20;
             
             // Disegniamo l'insetto come un quadrato rosso
