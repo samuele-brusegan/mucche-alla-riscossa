@@ -16,6 +16,12 @@ public class StallaTorreControllo implements Observer {
 
     /** True quando la stalla è stata invasa (game over). */
     private boolean fatalError;
+    
+    /** Callback invocato quando scatta il fatal error (game over). */
+    private Runnable onFatalError;
+
+    /** Callback invocato ogni volta che la stalla subisce un danno (per aggiornare la GUI). */
+    private Runnable onDannoSubito;
 
     public StallaTorreControllo() {
         this.integritaSistema = 100;
@@ -30,6 +36,7 @@ public class StallaTorreControllo implements Observer {
      *  - "DANNO_STALLA:n"       → riduce integrità di n
      *  - altro                  → log a livello info
      */
+    
     @Override
     public void update(String messaggio) {
         if (messaggio == null) return;
@@ -38,6 +45,11 @@ public class StallaTorreControllo implements Observer {
             this.fatalError = true;
             this.integritaSistema = 0;
             System.out.println("[STALLA] *** FATAL ERROR *** Invasione rilevata: " + messaggio);
+            
+            // Invocazione del callback per mostrare la schermata di sconfitta
+            if (onFatalError != null) {
+                onFatalError.run();
+            }
             return;
         }
 
@@ -46,19 +58,36 @@ public class StallaTorreControllo implements Observer {
                 int danno = Integer.parseInt(messaggio.substring("DANNO_STALLA:".length()).trim());
                 this.integritaSistema = Math.max(0, integritaSistema - danno);
                 System.out.println("[STALLA] Danno subito: " + danno + " | Integrità: " + integritaSistema);
+                
+                // Invocazione del callback per aggiornare l'HUD della View
+                if (onDannoSubito != null) {
+                    onDannoSubito.run();
+                }
+
                 if (integritaSistema == 0) {
                     this.fatalError = true;
                     System.out.println("[STALLA] *** FATAL ERROR *** Integrità a zero.");
+                    
+                    // Invocazione del callback per il game over
+                    if (onFatalError != null) {
+                        onFatalError.run();
+                    }
                 }
             } catch (NumberFormatException e) {
-                System.err.println("[STALLA] DANNO_STALLA malformato: " + messaggio);
+                System.err.println("[STALLA] DANNO_STALLA malformato: " + message);
             }
             return;
         }
 
         System.out.println("[STALLA] Evento: " + messaggio);
     }
-
     public int     getIntegritaSistema() { return integritaSistema; }
     public boolean isFatalError()        { return fatalError; }
+    public void setOnFatalError(Runnable callback) {
+        this.onFatalError = callback;
+    }
+
+    public void setOnDannoSubito(Runnable callback) {
+        this.onDannoSubito = callback;
+    }
 }
