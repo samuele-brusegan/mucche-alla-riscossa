@@ -1,46 +1,70 @@
 package MuccheAllaRiscossa.view;
 
-import javax.swing.JFrame;
-import java.awt.CardLayout;
-import javax.swing.JPanel;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * GameWindow: La finestra principale di gioco (JFrame).
- * Utilizza un CardLayout per permettere lo switch rapido e pulito
- * tra le diverse schermate (Menu, Gioco, Game Over, Vittoria).
+ * GameWindow: la finestra principale di gioco basata su {@link Stage} JavaFX.
+ *
+ * Tiene una mappa di pannelli identificati per nome (es. "MENU", "GAME",
+ * "GAME_OVER", "VITTORIA") e li scambia come root della {@link Scene},
+ * rimpiazzando il CardLayout della versione Swing.
  */
-public class GameWindow extends JFrame {
-    
-    private final CardLayout cardLayout;
-    private final JPanel mainContainer;
+public class GameWindow {
 
-    public GameWindow() {
-        // Impostazioni della finestra principale
-        setTitle("Mucche alla Riscossa!");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1024, 600);
-        setLocationRelativeTo(null); // Centra la finestra sullo schermo
-        setResizable(false);         // Dimensione fissa come da specifiche
+    private static final int LARGHEZZA = 1024;
+    private static final int ALTEZZA = 600;
 
-        // Layout a schede per gestire i pannelli
-        cardLayout = new CardLayout();
-        mainContainer = new JPanel(cardLayout);
+    private final Stage stage;
+    private final Scene scene;
+    private final Map<String, Parent> pannelli = new HashMap<>();
 
-        add(mainContainer);
+    /** Riferimento opzionale al GamePanel per avviare/fermare il loop allo switch. */
+    private GamePanel gamePanel;
+
+    public GameWindow(Stage stage) {
+        this.stage = stage;
+        stage.setTitle("Mucche alla Riscossa!");
+        stage.setResizable(false);
+
+        // Root iniziale vuoto: viene rimpiazzato non appena viene mostrato un pannello.
+        this.scene = new Scene(new StackPane(), LARGHEZZA, ALTEZZA);
+        stage.setScene(scene);
     }
 
-    /**
-     * Sostituisce il pannello attualmente visibile con quello richiesto.
-     * @param nomePannello Il nome identificativo del pannello (es. "MENU", "GAME")
-     */
+    /** Aggiunge un pannello con un nome identificativo. */
+    public void aggiungiPannello(String nome, Parent pannello) {
+        pannelli.put(nome, pannello);
+    }
+
+    /** Collega il GamePanel così da poter avviare/fermare il loop allo switch. */
+    public void setGamePanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+    }
+
+    /** Sostituisce il pannello attualmente visibile con quello richiesto. */
     public void mostraPannello(String nomePannello) {
-        cardLayout.show(mainContainer, nomePannello);
+        Parent p = pannelli.get(nomePannello);
+        if (p == null) {
+            System.err.println("[GameWindow] pannello sconosciuto: " + nomePannello);
+            return;
+        }
+        scene.setRoot(p);
+
+        // Avvio/stop automatico del game loop quando entriamo/usciamo dalla schermata di gioco.
+        if (gamePanel != null) {
+            if ("GAME".equals(nomePannello)) {
+                gamePanel.avviaGioco();
+            } else {
+                gamePanel.fermaGioco();
+            }
+        }
     }
 
-    /**
-     * Ritorna il contenitore principale per permettere il wiring dei pannelli nel Main.
-     */
-    public JPanel getMainContainer() {
-        return mainContainer;
-    }
+    public Stage getStage() { return stage; }
 }

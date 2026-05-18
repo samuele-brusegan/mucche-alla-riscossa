@@ -1,42 +1,44 @@
 package MuccheAllaRiscossa.view;
 
-import javax.swing.*;
-import java.awt.*;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
- * VittoriaPanel: Schermata celebrativa quando il giocatore vince la partita.
+ * VittoriaPanel: schermata celebrativa quando il giocatore vince la partita.
  */
-public class VittoriaPanel extends JPanel {
+public class VittoriaPanel extends VBox {
 
     public VittoriaPanel(GameWindow window) {
-        // Sfondo color oro/giallo per festeggiare
-        setBackground(new Color(255, 215, 0));
-        setLayout(new GridBagLayout());
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(20, 20, 20, 20);
-        gbc.gridx = 0;
+        setAlignment(Pos.CENTER);
+        setSpacing(25);
+        setBackground(new Background(new BackgroundFill(
+                Color.rgb(255, 215, 0), CornerRadii.EMPTY, null)));
 
         // Titolo Vittoria
-        JLabel lblVittoria = new JLabel("VITTORIA!");
-        lblVittoria.setFont(new Font("Arial", Font.BOLD, 52));
-        lblVittoria.setForeground(new Color(139, 69, 19)); // Marrone scuro per contrasto
-        gbc.gridy = 0;
-        add(lblVittoria, gbc);
+        Label lblVittoria = new Label("VITTORIA!");
+        lblVittoria.setFont(Font.font("Arial", FontWeight.BOLD, 52));
+        lblVittoria.setTextFill(Color.rgb(139, 69, 19)); // Marrone scuro per contrasto
 
         // Messaggio di complimenti
-        JLabel lblComplimenti = new JLabel("Hai respinto tutte le ondate! Le mucche hanno trionfato sugli insetti.");
-        lblComplimenti.setFont(new Font("Arial", Font.BOLD, 16));
-        lblComplimenti.setForeground(Color.BLACK);
-        gbc.gridy = 1;
-        add(lblComplimenti, gbc);
+        Label lblComplimenti = new Label(
+                "Hai respinto tutte le ondate! Le mucche hanno trionfato sugli insetti.");
+        lblComplimenti.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        lblComplimenti.setTextFill(Color.BLACK);
 
         // Bottone per tornare al menu
-        JButton btnMenu = new JButton("Torna al Menu");
-        btnMenu.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnMenu.setPreferredSize(new Dimension(180, 45));
-        btnMenu.addActionListener(e -> window.mostraPannello("MENU"));
-        gbc.gridy = 2;
-        add(btnMenu, gbc);
+        Button btnMenu = new Button("Torna al Menu");
+        btnMenu.setFont(Font.font("Arial", 18));
+        btnMenu.setPrefSize(180, 45);
+        btnMenu.setOnAction(e -> window.mostraPannello("MENU"));
+
+        getChildren().addAll(lblVittoria, lblComplimenti, btnMenu);
     }
 }

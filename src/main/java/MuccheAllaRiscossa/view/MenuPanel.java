@@ -1,54 +1,52 @@
 package MuccheAllaRiscossa.view;
 
-import javax.swing.*;
-import java.awt.*;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
- * MenuPanel: Schermata iniziale del gioco con sfondo verde prato.
- * Presenta il titolo, la lore e i pulsanti principali di interazione.
+ * MenuPanel: schermata iniziale con sfondo verde prato, titolo, lore e i
+ * due pulsanti principali (GIOCA / ESCI).
  */
-public class MenuPanel extends JPanel {
+public class MenuPanel extends VBox {
 
     public MenuPanel(GameWindow window) {
-        // Impostiamo uno sfondo verde prato
-        setBackground(new Color(34, 139, 34));
-        setLayout(new GridBagLayout());
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 15, 15, 15); // Margini tra gli elementi
-        gbc.gridx = 0;
+        setAlignment(Pos.CENTER);
+        setSpacing(20);
+        setBackground(new Background(new BackgroundFill(
+                Color.rgb(34, 139, 34), CornerRadii.EMPTY, null)));
 
         // Titolo grande del gioco
-        JLabel lblTitolo = new JLabel("MUCCHE ALLA RISCOSSA");
-        lblTitolo.setFont(new Font("Arial", Font.BOLD, 46));
-        lblTitolo.setForeground(Color.WHITE);
-        gbc.gridy = 0;
-        add(lblTitolo, gbc);
+        Label lblTitolo = new Label("MUCCHE ALLA RISCOSSA");
+        lblTitolo.setFont(Font.font("Arial", FontWeight.BOLD, 46));
+        lblTitolo.setTextFill(Color.WHITE);
 
         // Sottotitolo con la lore / storia del gioco
-        JLabel lblLore = new JLabel("Gli insetti mutanti vogliono invadere la stalla. Schiera le tue bovine e difendi il fieno!");
-        lblLore.setFont(new Font("Arial", Font.ITALIC, 16));
-        lblLore.setForeground(new Color(220, 220, 220));
-        gbc.gridy = 1;
-        add(lblLore, gbc);
+        Label lblLore = new Label(
+                "Gli insetti mutanti vogliono invadere la stalla. Schiera le tue bovine e difendi il fieno!");
+        lblLore.setFont(Font.font("Arial", javafx.scene.text.FontPosture.ITALIC, 16));
+        lblLore.setTextFill(Color.rgb(220, 220, 220));
 
         // Bottone "GIOCA"
-        JButton btnGioca = new JButton("GIOCA");
-        btnGioca.setFont(new Font("Arial", Font.BOLD, 22));
-        btnGioca.setPreferredSize(new Dimension(180, 50));
-        btnGioca.addActionListener(e -> {
-            // Cambia pannello mostrando quello di gioco reale
-            window.mostraPannello("GAME");
-        });
-        gbc.gridy = 2;
-        add(btnGioca, gbc);
+        Button btnGioca = new Button("GIOCA");
+        btnGioca.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        btnGioca.setPrefSize(180, 50);
+        btnGioca.setOnAction(e -> window.mostraPannello("GAME"));
 
         // Bottone "ESCI"
-        JButton btnEsci = new JButton("ESCI");
-        btnEsci.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnEsci.setPreferredSize(new Dimension(120, 40));
-        btnEsci.addActionListener(e -> System.exit(0));
-        gbc.gridy = 3;
-        add(btnEsci, gbc);
+        Button btnEsci = new Button("ESCI");
+        btnEsci.setFont(Font.font("Arial", 18));
+        btnEsci.setPrefSize(120, 40);
+        btnEsci.setOnAction(e -> Platform.exit());
+
+        getChildren().addAll(lblTitolo, lblLore, btnGioca, btnEsci);
     }
 }

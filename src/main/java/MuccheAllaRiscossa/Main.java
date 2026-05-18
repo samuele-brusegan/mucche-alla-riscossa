@@ -2,57 +2,62 @@ package MuccheAllaRiscossa;
 
 import MuccheAllaRiscossa.controller.GameController;
 import MuccheAllaRiscossa.view.*;
-import javax.swing.SwingUtilities;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 /**
- * Entry point del gioco adattato all'infrastruttura grafica Swing.
- * Configura la finestra principale, tutti i pannelli di gioco, lo SlideManager
- * e attiva il binding dei callback per la gestione degli errori fatali/danni.
+ * Entry point del gioco basato su JavaFX.
+ *
+ * Configura la finestra principale ({@link GameWindow}), tutti i pannelli
+ * di gioco, lo {@link SlideManager} globale e collega i callback della
+ * stalla per aggiornare l'HUD/mandare al Game Over in tempo reale.
  */
-public final class Main {
+public final class Main extends Application {
 
     public static void main(String[] args) {
-        // Avviamo l'interfaccia grafica nel thread sicuro di Swing (EDT)
-        SwingUtilities.invokeLater(() -> {
-            // 1. Creazione della finestra principale
-            GameWindow window = new GameWindow();
+        launch(args);
+    }
 
-            // 2. Istanziazione dei pannelli di gioco reali
-            MenuPanel menuPanel = new MenuPanel(window);
-            GamePanel gamePanel = new GamePanel(window);
-            GameOverPanel gameOverPanel = new GameOverPanel(window);
-            VittoriaPanel vittoriaPanel = new VittoriaPanel(window);
+    @Override
+    public void start(Stage stage) {
+        // 1. Creazione della finestra principale
+        GameWindow window = new GameWindow(stage);
 
-            // 3. Registrazione dei pannelli nel container con il CardLayout
-            window.getMainContainer().add(menuPanel, "MENU");
-            window.getMainContainer().add(gamePanel, "GAME");
-            window.getMainContainer().add(gameOverPanel, "GAME_OVER");
-            window.getMainContainer().add(vittoriaPanel, "VITTORIA");
+        // 2. Istanziazione dei pannelli di gioco reali
+        MenuPanel menuPanel = new MenuPanel(window);
+        GamePanel gamePanel = new GamePanel(window);
+        GameOverPanel gameOverPanel = new GameOverPanel(window);
+        VittoriaPanel vittoriaPanel = new VittoriaPanel(window);
 
-            // 4. Configurazione dello SlideManager globale
-            SlideManager.getInstance().setWindow(window);
+        // 3. Registrazione dei pannelli nel container
+        window.aggiungiPannello("MENU", menuPanel);
+        window.aggiungiPannello("GAME", gamePanel);
+        window.aggiungiPannello("GAME_OVER", gameOverPanel);
+        window.aggiungiPannello("VITTORIA", vittoriaPanel);
+        window.setGamePanel(gamePanel);
 
-            // 5. Configurazione dei callback (Runnable) su StallaTorreControllo
-            // In questo modo, quando la stalla subisce danni o muore, la view risponde subito
-            GameController gc = GameController.getInstance();
-            
-            gc.getStalla().setOnDannoSubito(() -> {
-                // Forza il ridisegno del GamePanel per aggiornare la barra dell'HUD in tempo reale
-                gamePanel.repaint();
-            });
+        // 4. Configurazione dello SlideManager globale
+        SlideManager.getInstance().setWindow(window);
 
-            gc.getStalla().setOnFatalError(() -> {
-                // Ferma il timer del game loop e manda la schermata di Game Over
-                gamePanel.fermaGioco();
-                SlideManager.getInstance().mostra(SlideManager.Slide.GAME_OVER);
-            });
+        // 5. Configurazione dei callback (Runnable) su StallaTorreControllo.
+        //    I callback possono arrivare da thread diversi: rimbalziamo sul JavaFX
+        //    Application Thread con Platform.runLater per sicurezza.
+        GameController gc = GameController.getInstance();
 
-            // 6. Mostriamo il menu iniziale e rendiamo visibile l'applicazione
-            SlideManager.getInstance().mostra(SlideManager.Slide.MENU);
-            window.setVisible(true);
+        gc.getStalla().setOnDannoSubito(() -> Platform.runLater(gamePanel::forzaRedraw));
 
-            // Nota: L'avvio effettivo del loop (gamePanel.avviaGioco()) è gestito 
-            // all'interno dei pannelli o al cambio di slide verso la partita reale.
-        });
+        gc.getStalla().setOnFatalError(() -> Platform.runLater(() -> {
+            gamePanel.fermaGioco();
+            SlideManager.getInstance().mostra(SlideManager.Slide.GAME_OVER);
+        }));
+
+        // 6. Mostriamo il menu iniziale e rendiamo visibile l'applicazione
+        SlideManager.getInstance().mostra(SlideManager.Slide.MENU);
+        stage.show();
+
+        // Nota: l'avvio effettivo del loop avviene quando entriamo in "GAME"
+        // (vedi GameWindow.mostraPannello → gamePanel.avviaGioco()).
     }
 }

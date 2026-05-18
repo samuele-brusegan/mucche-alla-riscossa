@@ -2,27 +2,45 @@ package MuccheAllaRiscossa.view.assets;
 
 import MuccheAllaRiscossa.model.difensori.MuccaCornuta;
 import MuccheAllaRiscossa.model.nemici.GranTafano;
+
+import javafx.application.Platform;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ResourceLoaderTest {
 
+    @BeforeAll
+    static void avviaJavaFx() throws Exception {
+        // Inizializza il toolkit JavaFX una sola volta (Monocle in CI headless).
+        try {
+            CountDownLatch latch = new CountDownLatch(1);
+            Platform.startup(latch::countDown);
+            latch.await(5, TimeUnit.SECONDS);
+        } catch (IllegalStateException alreadyStarted) {
+            // toolkit già attivo: ok
+        }
+    }
+
     @Test
     void spriteAssenteRitornaPlaceholder64x64() {
-        BufferedImage img = ResourceLoader.sprite("nome-che-non-esiste-mai", Color.RED, 'X');
+        Image img = ResourceLoader.sprite("nome-che-non-esiste-mai", Color.RED, 'X');
         assertNotNull(img);
-        assertEquals(64, img.getWidth());
-        assertEquals(64, img.getHeight());
+        assertEquals(64, (int) img.getWidth());
+        assertEquals(64, (int) img.getHeight());
     }
 
     @Test
     void cacheRestituisceLaStessaIstanza() {
-        BufferedImage a = ResourceLoader.sprite("cache-test", Color.BLUE, 'A');
-        BufferedImage b = ResourceLoader.sprite("cache-test", Color.RED, 'Z');
+        Image a = ResourceLoader.sprite("cache-test", Color.BLUE, 'A');
+        Image b = ResourceLoader.sprite("cache-test", Color.RED, 'Z');
         assertSame(a, b, "stessa chiave → stesso oggetto in cache");
     }
 

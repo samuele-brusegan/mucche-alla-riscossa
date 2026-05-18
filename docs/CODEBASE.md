@@ -95,7 +95,7 @@ Observer/Subject e il tipo evento `GameEvent`:
 
 ```mermaid
 flowchart LR
-    subgraph view[view (Swing)]
+    subgraph view["view (JavaFX)"]
         GW[GameWindow]
         MP[MenuPanel]
         GP[GamePanel]
@@ -142,7 +142,7 @@ flowchart LR
     subgraph pattern
         SUB[Subject]
         OBS[Observer]
-        GE[GameEvent (sealed)]
+        GE["GameEvent (sealed)"]
     end
 
     GP --> GC
@@ -522,37 +522,37 @@ I due `Runnable` sono il ponte fra modello e GUI: `Main` li imposta
 sequenceDiagram
     participant JVM
     participant Main
-    participant SwingEDT
+    participant FxApp as JavaFX App Thread
     participant GW as GameWindow
     participant SM as SlideManager
     participant GC as GameController
     participant ST as StallaTorreControllo
 
     JVM->>Main: main(args)
-    Main->>SwingEDT: invokeLater(...)
-    SwingEDT->>GW: new GameWindow()
-    SwingEDT->>GW: add(MenuPanel/GamePanel/GameOverPanel/VittoriaPanel)
-    SwingEDT->>SM: setWindow(window)
-    SwingEDT->>GC: getInstance()
-    GC-->>SwingEDT: GameController (con ST già creata)
-    SwingEDT->>ST: setOnDannoSubito(repaint)
-    SwingEDT->>ST: setOnFatalError(stop+slide GAME_OVER)
-    SwingEDT->>SM: mostra(MENU)
-    SwingEDT->>GW: setVisible(true)
+    Main->>FxApp: Application.launch
+    FxApp->>GW: new GameWindow(stage)
+    FxApp->>GW: aggiungiPannello(MENU/GAME/GAME_OVER/VITTORIA)
+    FxApp->>SM: setWindow(window)
+    FxApp->>GC: getInstance()
+    GC-->>FxApp: GameController (con ST già creata)
+    FxApp->>ST: setOnDannoSubito(forzaRedraw via Platform.runLater)
+    FxApp->>ST: setOnFatalError(stop+slide GAME_OVER)
+    FxApp->>SM: mostra(MENU)
+    FxApp->>GW: stage.show()
 ```
 
 ### 8.2 Un tick di gioco
 
 ```mermaid
 sequenceDiagram
-    participant T as Timer (33ms)
+    participant T as AnimationTimer ~33ms
     participant GP as GamePanel
     participant GC as GameController
-    participant I as InsettoMutante (ognuno)
-    participant U as UnitaBovina (ognuna)
+    participant I as InsettoMutante
+    participant U as UnitaBovina
     participant ST as StallaTorreControllo
 
-    T->>GP: action
+    T->>GP: handle(now)
     GP->>GC: isGameOver()?
     alt game over
         GP->>GP: fermaGioco()
@@ -561,22 +561,22 @@ sequenceDiagram
         GP->>GC: tick()
         loop ogni insetto vivo
             GC->>I: muovi()
-            I->>I: avanza() [override per Zanzara/GranTafano/...]
+            I->>I: avanza override per Zanzara/GranTafano/...
             opt colonna >= 9
                 I->>ST: notify(InvasioneStalla)
-                ST->>ST: fatalError = true, onFatalError.run()
+                ST->>ST: fatalError true, onFatalError.run
             end
         end
         loop ogni unità
             Note over GC: scan raggio (placeholder Flusso 1)
         end
         loop pulizia
-            GC->>I: detach(stalla); detach(ognuna delle U)
-            GC->>GC: se !vivo → aggiungiFieno(25)
+            GC->>I: detach stalla e ognuna delle U
+            GC->>GC: se non vivo → aggiungiFieno 25
         end
-        GC->>GC: gestisciSistemaOndate()
-        GC->>GC: gestisciGenerazioneRisorse()
-        GP->>GP: repaint()
+        GC->>GC: gestisciSistemaOndate
+        GC->>GC: gestisciGenerazioneRisorse
+        GP->>GP: disegna su Canvas
     end
 ```
 
@@ -593,20 +593,20 @@ sequenceDiagram
     I->>L: copia difensiva
     loop ogni observer
         I->>U: onEvent(X)
-        U->>U: switch su X (pattern matching)
+        U->>U: switch su X con pattern matching
         alt X = InsettoInRaggio e cooldown=0
-            U->>U: stato = IN_ATTACCO; attacca(); cooldown = max
+            U->>U: stato IN_ATTACCO, attacca, reset cooldown
         else X = Danno
             U->>U: riceviDanno(q)
         else X = FinePartita
-            U->>U: stato = MORTA
+            U->>U: stato MORTA
         else altro
             U-->>U: ignora
         end
         I->>ST: onEvent(X)
         alt X = InvasioneStalla
-            ST->>ST: fatalError = true; integrità = 0
-            ST-->>ST: onFatalError.run() [se settato]
+            ST->>ST: fatalError true, integrità 0
+            ST-->>ST: onFatalError.run se settato
         else X = DannoStalla
             ST->>ST: applicaDanno(q)
         else altro
@@ -619,12 +619,12 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[inPausa=true, ondata=0] --> B{tickContatoreOndata >= 150?}
+    A["inPausa=true, ondata=0"] --> B{"tickContatoreOndata >= 150?"}
     B -- no --> A
-    B -- sì --> C[avviaOndata(ondata+1)\ninPausa=false]
-    C --> D{isOndataCompletata?\n(insetti vuota)}
+    B -- sì --> C["avviaOndata(ondata+1)<br/>inPausa=false"]
+    C --> D{"isOndataCompletata?<br/>(insetti vuota)"}
     D -- no --> D
-    D -- sì --> E[inPausa=true\ntickContatoreOndata=0]
+    D -- sì --> E["inPausa=true<br/>tickContatoreOndata=0"]
     E --> B
 ```
 
