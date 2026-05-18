@@ -184,11 +184,21 @@ public final class GameController {
     public boolean isInPausa() { return inPausa; }
 
     /** Reset utile per test/demo: ricrea lo stato iniziale. NON usare in produzione. */
-    void resetForTesting() {
+    public void resetForTesting() {
         this.balleDiFieno = 100;
         this.saluteStalla = 100;
         this.unita.clear();
         this.insetti.clear();
+        this.proiettili.clear();
+        this.trappole.clear();
+        this.ondataCorrente = 0;
+        this.tickContatoreOndata = 0;
+        this.inPausa = true;
+        this.tickRisorse = 0;
+        // resetta lo stato della stalla (integrità, fatalError) ricostruendone i campi via reflection-free:
+        // più semplice: reimposta i callback a null e applica un evento "fittizio" non basta;
+        // accettiamo che la stalla mantenga lo stato perché il singleton la possiede final.
+        // Per i test che hanno bisogno di una stalla "fresca", istanziarla a parte.
     }
 /**
      * Calcola la distanza euclidea tra un'unità bovina e un insetto mutante.
