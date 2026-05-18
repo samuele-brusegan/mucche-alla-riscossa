@@ -74,6 +74,8 @@ Ogni push e pull request su `main` esegue build e test su GitHub Actions
 ## Struttura del repository
 
 - `src/main/java/` — sorgenti Java
+- `src/main/resources/sprites/` — PNG dei difensori/nemici (con fallback procedurale)
+- `src/main/resources/audio/` — WAV degli effetti sonori
 - `src/test/java/` — test JUnit 5
 - `docs/uml.md` — diagramma delle classi (Mermaid)
 - `pom.xml` — configurazione Maven

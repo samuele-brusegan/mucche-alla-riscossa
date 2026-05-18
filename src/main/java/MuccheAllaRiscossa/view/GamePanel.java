@@ -3,9 +3,11 @@ package MuccheAllaRiscossa.view;
 import MuccheAllaRiscossa.controller.GameController;
 import MuccheAllaRiscossa.model.difensori.UnitaBovina;
 import MuccheAllaRiscossa.model.nemici.InsettoMutante;
+import MuccheAllaRiscossa.view.assets.Sprites;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -124,33 +126,19 @@ public class GamePanel extends JPanel {
         }
 
         // --- 3. DISEGNO UNITA BOVINE (DIFENSORI) ---
-        g2.setFont(new Font("Arial", Font.BOLD, 22));
         for (UnitaBovina mucca : GameController.getInstance().getUnita()) {
-            int xMucca = OFFSET_X + mucca.getColonna() * LARGHEZZA_CELLA + 15;
-            int yMucca = OFFSET_Y + mucca.getRiga() * ALTEZZA_CELLA + 15;
-            
-            // Disegniamo la mucca come un cerchio blu
-            g2.setColor(new Color(65, 105, 225)); // Royal Blue
-            g2.fillOval(xMucca, yMucca, 50, 50);
-            
-            // Lettera iniziale d'esempio al centro
-            g2.setColor(Color.WHITE);
-            g2.drawString("V", xMucca + 18, yMucca + 32);
+            int xMucca = OFFSET_X + mucca.getColonna() * LARGHEZZA_CELLA + 8;
+            int yMucca = OFFSET_Y + mucca.getRiga() * ALTEZZA_CELLA + 8;
+            BufferedImage sprite = Sprites.of(mucca);
+            g2.drawImage(sprite, xMucca, yMucca, 64, 64, null);
         }
 
         // --- 4. DISEGNO INSETTI MUTANTI (NEMICI) ---
         for (InsettoMutante insetto : GameController.getInstance().getInsetti()) {
-            // Se l'insetto espone getX() e getY() continui usiamo quelli, altrimenti usiamo la colonna come approssimazione grafica temporanea
-            int xInsetto = OFFSET_X + (int) (insetto.getColonna() * LARGHEZZA_CELLA) + 20;
-            int yInsetto = OFFSET_Y + (insetto.getRiga() * ALTEZZA_CELLA) + 20;
-            
-            // Disegniamo l'insetto come un quadrato rosso
-            g2.setColor(new Color(220, 20, 60)); // Crimson Red
-            g2.fillRect(xInsetto, yInsetto, 40, 40);
-            
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 16));
-            g2.drawString("Z", xInsetto + 14, yInsetto + 26);
+            int xInsetto = OFFSET_X + (int) (insetto.getColonna() * LARGHEZZA_CELLA) + 8;
+            int yInsetto = OFFSET_Y + (insetto.getRiga() * ALTEZZA_CELLA) + 8;
+            BufferedImage sprite = Sprites.of(insetto);
+            g2.drawImage(sprite, xInsetto, yInsetto, 64, 64, null);
         }
     }
 }
