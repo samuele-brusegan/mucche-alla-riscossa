@@ -1,29 +1,22 @@
 package MuccheAllaRiscossa.pattern;
 
 /**
- * Interfaccia Observer
+ * Interfaccia Observer.
  *
- * Chi "osserva" gli eventi di gioco deve implementare questa interfaccia.
- * In pratica: la StallaTorreControllo la implementa per sapere
- * quando un insetto è arrivato alla stalla; allo stesso modo le UnitaBovina
- * la implementano per reagire (es. attaccare) quando un insetto entra
- * nel loro raggio d'azione.
+ * Riceve {@link GameEvent} tipizzati dai Subject. Le implementazioni sono
+ * tipicamente la {@code StallaTorreControllo} (per la salute della stalla)
+ * e le {@code UnitaBovina} (per reagire ai nemici in raggio).
  *
- * Il metodo update() viene chiamato automaticamente dal Subject
- * ogni volta che succede qualcosa di importante (es. GranTafano arriva
- * alla nostra stalla, oppure un insetto entra nella corsia di una mucca).
- *
- * Il messaggio è una stringa con un protocollo a prefissi concordato
- * tra Subject e Observer (es. "INSETTO_IN_RAGGIO:riga:colonna",
- * "DANNO:50", "FINE_PARTITA"). Mantenere il protocollo a stringhe
- * coerente con il diagramma UML del progetto.
+ * Le implementazioni dovrebbero usare un {@code switch} su pattern di
+ * {@code GameEvent} e ignorare gli eventi non rilevanti, così il protocollo
+ * resta estensibile senza rompere i client.
  */
 public interface Observer {
 
     /**
      * Notifica l'Observer di un evento del Subject.
      *
-     * @param messaggio descrizione dell'evento (protocollo a prefissi).
+     * @param evento descrizione tipizzata dell'evento (non null).
      */
-    void update(String messaggio);
+    void onEvent(GameEvent evento);
 }
