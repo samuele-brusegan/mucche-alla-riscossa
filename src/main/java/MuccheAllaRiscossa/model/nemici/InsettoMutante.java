@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import MuccheAllaRiscossa.pattern.GameEvent;
 import MuccheAllaRiscossa.pattern.Observer;
 import MuccheAllaRiscossa.pattern.Subject;
 
@@ -73,10 +74,10 @@ public abstract class InsettoMutante implements Subject {
     }
 
     @Override
-    public void notifyObservers(String messaggio) {
+    public void notifyObservers(GameEvent evento) {
         // Iteriamo su una copia per consentire detach() durante l'update
         for (Observer o : new ArrayList<>(osservatori)) {
-            o.update(messaggio);
+            o.onEvent(evento);
         }
     }
 
@@ -119,14 +120,14 @@ public abstract class InsettoMutante implements Subject {
     /** Segna l'insetto come arrivato alla stalla e notifica l'invasione. */
     public void setArrivato() {
         this.arrivatoAlTarget = true;
-        notifyObservers("INVASIONE_STALLA:" + getClass().getSimpleName() + ":" + id);
+        notifyObservers(new GameEvent.InvasioneStalla(getClass().getSimpleName(), id));
     }
 
     /** Applica danno all'insetto e notifica eventuale morte. */
     public void subisciDanno(int danno) {
         this.salute -= danno;
         if (this.salute <= 0) {
-            notifyObservers("INSETTO_MORTO:" + getClass().getSimpleName() + ":" + id);
+            notifyObservers(new GameEvent.InsettoMorto(getClass().getSimpleName(), id));
         }
     }
 

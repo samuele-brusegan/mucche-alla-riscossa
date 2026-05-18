@@ -1,5 +1,7 @@
 package MuccheAllaRiscossa.model.nemici;
 
+import MuccheAllaRiscossa.pattern.GameEvent;
+
 /**
  * Zanzara: insetto leggero e veloce che può volare oltre le balle di fieno.
  * Salute bassa ma difficile da fermare con difese a terra.
@@ -32,7 +34,7 @@ public class Zanzara extends InsettoMutante {
     public void volaOltreBalle() {
         this.inVolo = true;
         System.out.println("[Zanzara#" + id + "] Vola oltre le balle a quota " + quotaVolo);
-        notifyObservers("ZANZARA_IN_VOLO:" + id + ":riga:" + riga);
+        notifyObservers(new GameEvent.ZanzaraInVolo(id, riga));
     }
 
     public double  getQuotaVolo() { return quotaVolo; }

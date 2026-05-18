@@ -1,5 +1,7 @@
 package MuccheAllaRiscossa.model.nemici;
 
+import MuccheAllaRiscossa.pattern.GameEvent;
+
 /**
  * GranTafano: il boss. Quando entra in difficoltà si sotterra e
  * riemerge più avanti, scavalcando una porzione della corsia.
@@ -58,7 +60,7 @@ public class GranTafano extends InsettoMutante {
             this.tickSotterraneo = 0;
         }
         System.out.println("[GranTafano#" + id + "] " + (isSotterraneo ? "Si sotterra!" : "Riemerge!"));
-        notifyObservers("TAFANO_SCAVA:" + id + ":sotterraneo=" + isSotterraneo);
+        notifyObservers(new GameEvent.TafanoScava(id, isSotterraneo));
     }
 
     /** Mentre è sotterraneo non subisce danno. */

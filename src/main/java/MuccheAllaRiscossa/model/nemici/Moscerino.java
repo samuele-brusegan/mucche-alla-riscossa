@@ -1,5 +1,7 @@
 package MuccheAllaRiscossa.model.nemici;
 
+import MuccheAllaRiscossa.pattern.GameEvent;
+
 /**
  * Moscerino: piccolo, sfuggente, schiva i colpi muovendosi a zig-zag.
  * Poca salute ma difficile da colpire.
@@ -33,7 +35,7 @@ public class Moscerino extends InsettoMutante {
     /** Schiva: probabilità di annullare un colpo, notifica l'evasione. */
     public void evadi() {
         System.out.println("[Moscerino#" + id + "] Zig-zag! Schivata di ampiezza " + ampiezzaZigZag);
-        notifyObservers("MOSCERINO_EVADE:" + id);
+        notifyObservers(new GameEvent.MoscerinoEvade(id));
     }
 
     public double getAmpiezzaZigZag() { return ampiezzaZigZag; }
