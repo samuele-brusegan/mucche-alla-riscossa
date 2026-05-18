@@ -1,5 +1,7 @@
 package MuccheAllaRiscossa.model.difensori;
 
+import MuccheAllaRiscossa.model.gameplay.Proiettile;
+
 /** VitellinoVedeo:
  * Spara "Zampe di Balsa" agli insetti nella sua corsia.
  * È la mucca più economica e facile da usare(diciamo livello base).
@@ -12,7 +14,9 @@ public class VitellinoVedeo extends UnitaBovina {
 
     private int dannoPerColpo;
 
- 
+    /** Ultimo proiettile sparato (il controller lo raccoglie) */
+    private Proiettile ultimoProiettile;
+
     public VitellinoVedeo() {
         super(
             "Vedeo",  // nome
@@ -28,9 +32,18 @@ public class VitellinoVedeo extends UnitaBovina {
     public void attacca() {
         System.out.println("[" + nome + "] Sparo una " + arma + "! Danno: " + dannoPerColpo);
 
-        // Todo: creare "Proiettile" e aggiungerlo alla lista proiettili del GameController
+        // creo il proiettile una cella avanti rispetto alla mia posizione
+        this.ultimoProiettile = new Proiettile(
+                dannoPerColpo,
+                1.0,           // velocita standard
+                riga,
+                colonna + 1,
+                false          // colpisce solo il primo insetto
+        );
     }
 
+    /** Restituisce l'ultimo proiettile creato (puo essere null se non ha ancora sparato) */
+    public Proiettile getUltimoProiettile() { return ultimoProiettile; }
 
     public String getArma()        { return arma; }
     public int    getDannoPerColpo() { return dannoPerColpo; }
