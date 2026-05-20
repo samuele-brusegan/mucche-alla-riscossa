@@ -15,10 +15,15 @@ public class Zanzara extends InsettoMutante {
     private boolean inVolo;
 
     public Zanzara(int riga) {
-        super(40, 0.6, riga);
+        super(40, 0.10, riga);
         this.quotaVolo = 1.5;
         this.inVolo    = false;
+        this.dannoMorso = 3; // morsi rapidi ma poco profondi
     }
+
+    /** La zanzara sorvola sempre le mucche: non si fa bloccare. */
+    @Override
+    public boolean attraversaMucche() { return true; }
 
     /**
      * Override di avanza(): la zanzara vola a ogni tick,

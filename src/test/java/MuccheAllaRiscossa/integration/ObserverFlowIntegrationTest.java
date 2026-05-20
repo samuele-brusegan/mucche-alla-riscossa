@@ -77,8 +77,9 @@ class ObserverFlowIntegrationTest {
         // Step 3: tick del controller → rimuove l'insetto morto e premia il giocatore
         gc.tick();
         assertFalse(gc.getInsetti().contains(m));
-        assertEquals(fienoDopoSchiera + 25, gc.getBalleDiFieno(),
-                "uccidere un insetto deve dare 25 fieno");
+        assertEquals(fienoDopoSchiera + MuccheAllaRiscossa.controller.GameController.FIENO_PER_KILL,
+                gc.getBalleDiFieno(),
+                "uccidere un insetto deve dare il bonus fieno per kill");
     }
 
     @Test
@@ -89,7 +90,7 @@ class ObserverFlowIntegrationTest {
         Moscone m = new Moscone(0);
         gc.aggiungiInsetto(m);
 
-        for (int i = 0; i < 200 && !m.isArrivatoAlTarget(); i++) m.muovi();
+        for (int i = 0; i < 1000 && !m.isArrivatoAlTarget(); i++) m.muovi();
         assertTrue(m.isArrivatoAlTarget());
         assertTrue(stalla.isFatalError(), "la stalla deve essere in fatal error dopo l'invasione");
         assertTrue(gc.isGameOver());
@@ -146,7 +147,7 @@ class ObserverFlowIntegrationTest {
 
         Moscone m = new Moscone(0);
         gc.aggiungiInsetto(m);
-        for (int i = 0; i < 200 && !m.isArrivatoAlTarget(); i++) m.muovi();
+        for (int i = 0; i < 1000 && !m.isArrivatoAlTarget(); i++) m.muovi();
         assertTrue(m.isArrivatoAlTarget());
 
         gc.tick(); // detach automatico

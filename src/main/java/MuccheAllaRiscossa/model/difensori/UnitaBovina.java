@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import MuccheAllaRiscossa.model.gameplay.BoassaEsplosiva;
 import MuccheAllaRiscossa.model.gameplay.Proiettile;
+import MuccheAllaRiscossa.model.nemici.InsettoMutante;
 import MuccheAllaRiscossa.pattern.GameEvent;
 import MuccheAllaRiscossa.pattern.Observer;
 
@@ -60,6 +62,16 @@ public abstract class UnitaBovina implements Observer {
     /** Proiettili pronti da raccogliere (il controller li prende e svuota la lista) */
     protected List<Proiettile> proiettiliPronti;
 
+    /** Boasse pronte da raccogliere (usata solo dalle Mucche Beatrice) */
+    protected List<BoassaEsplosiva> boassePronte;
+
+    /**
+     * Bersaglio corrente designato dal controller prima di triggerare l'attacco.
+     * Necessario per attacchi corpo a corpo (es. MuccaCornuta) che devono sapere
+     * quale insetto colpire; le mucche a distanza possono ignorarlo.
+     */
+    protected InsettoMutante bersaglioCorrente;
+
     /** nelle altre classi richiamo il costruttore tramite super(...)*/
     public UnitaBovina(String nome, int costoFieno, double raggioAzione, int vita) {
         this.id                = NEXT_ID.getAndIncrement();
@@ -71,7 +83,11 @@ public abstract class UnitaBovina implements Observer {
         this.cooldown          = 0;
         this.cooldownMax       = 3; // di default attacca ogni 3 tick
         this.proiettiliPronti  = new ArrayList<>();
+        this.boassePronte      = new ArrayList<>();
     }
+
+    /** Imposta l'insetto bersaglio prima del prossimo attacco (chiamato dal controller). */
+    public void setBersaglioCorrente(InsettoMutante b) { this.bersaglioCorrente = b; }
 
     /** Metodo astratto che ogni mucca avrà differente*/
     public abstract void attacca();
@@ -148,6 +164,13 @@ public abstract class UnitaBovina implements Observer {
     public List<Proiettile> raccogliProiettili() {
         List<Proiettile> copia = new ArrayList<>(proiettiliPronti);
         proiettiliPronti.clear();
+        return copia;
+    }
+
+    /** Restituisce le boasse pronte e svuota la lista */
+    public List<BoassaEsplosiva> raccogliBoasse() {
+        List<BoassaEsplosiva> copia = new ArrayList<>(boassePronte);
+        boassePronte.clear();
         return copia;
     }
 }

@@ -45,6 +45,12 @@ public abstract class InsettoMutante implements Subject {
     /** Tick rimanenti di rallentamento (0 = nessun rallentamento attivo) */
     protected int tickRallentamento;
 
+    /**
+     * Danno inflitto a una mucca per ogni tick di "morso" (quando si trova sulla
+     * stessa cella di una mucca che lo blocca). Le sottoclassi possono alzarlo.
+     */
+    protected int dannoMorso = 5;
+
     /** Lista degli osservatori registrati. */
     private final List<Observer> osservatori = new ArrayList<>();
 
@@ -150,4 +156,12 @@ public abstract class InsettoMutante implements Subject {
     public int     getRiga()            { return riga; }
     public double  getColonna()         { return colonna; }
     public boolean isArrivatoAlTarget() { return arrivatoAlTarget; }
+    public int     getDannoMorso()      { return dannoMorso; }
+
+    /**
+     * True se l'insetto in questo momento puo' attraversare le mucche senza
+     * essere bloccato (volo, scavo). Le sottoclassi sovrascrivono per i casi
+     * particolari; il default si limita al fatto di essere vivo.
+     */
+    public boolean attraversaMucche() { return false; }
 }

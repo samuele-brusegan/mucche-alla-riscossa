@@ -20,7 +20,10 @@ public class MuccaCornuta extends UnitaBovina {
 
     @Override
     public void attacca() {
-        incorna();
+        // Se il controller ha designato un bersaglio applichiamo davvero il danno corpo a corpo;
+        // altrimenti facciamo il colpo "a vuoto" per retrocompatibilita con i test.
+        if (bersaglioCorrente != null) incorna(bersaglioCorrente);
+        else                            incorna();
     }
 
     /** Versione senza parametri: stampa l'attacco (retrocompatibilita) */

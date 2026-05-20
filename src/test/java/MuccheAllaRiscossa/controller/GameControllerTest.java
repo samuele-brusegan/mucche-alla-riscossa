@@ -32,35 +32,39 @@ class GameControllerTest {
     /* ---------- Risorse: Balle di Fieno ---------- */
 
     @Test
-    void iniziaCon100Fieno() {
-        assertEquals(100, gc.getBalleDiFieno());
+    void iniziaConFienoIniziale() {
+        assertEquals(GameController.FIENO_INIZIALE, gc.getBalleDiFieno());
     }
 
     @Test
     void aggiungiFienoIncrementa() {
+        int prima = gc.getBalleDiFieno();
         gc.aggiungiFieno(25);
-        assertEquals(125, gc.getBalleDiFieno());
+        assertEquals(prima + 25, gc.getBalleDiFieno());
     }
 
     @Test
     void sottraiFienoOkSeAbbastanza() {
+        int prima = gc.getBalleDiFieno();
         assertTrue(gc.sottraiFieno(40));
-        assertEquals(60, gc.getBalleDiFieno());
+        assertEquals(prima - 40, gc.getBalleDiFieno());
     }
 
     @Test
     void sottraiFienoFallisceSeInsufficiente() {
-        assertFalse(gc.sottraiFieno(101));
-        assertEquals(100, gc.getBalleDiFieno(), "fieno invariato sul fallimento");
+        int prima = gc.getBalleDiFieno();
+        assertFalse(gc.sottraiFieno(prima + 1));
+        assertEquals(prima, gc.getBalleDiFieno(), "fieno invariato sul fallimento");
     }
 
     /* ---------- Schieramento difensori ---------- */
 
     @Test
     void schieraScalaCostoDalFieno() {
+        int prima = gc.getBalleDiFieno();
         UnitaBovina u = new VitellinoVedeo(); // costo 50
         assertTrue(gc.schiera(u, 0, 1));
-        assertEquals(50, gc.getBalleDiFieno());
+        assertEquals(prima - u.getCostoFieno(), gc.getBalleDiFieno());
         assertEquals(1, gc.getUnita().size());
         assertEquals(0, u.getRiga());
         assertEquals(1, u.getColonna());
@@ -68,7 +72,8 @@ class GameControllerTest {
 
     @Test
     void schieraFallisceSeFienoInsufficiente() {
-        gc.sottraiFieno(80); // restano 20
+        // svuoto le riserve sotto al costo di una Vacca (200)
+        gc.sottraiFieno(gc.getBalleDiFieno() - 10);
         UnitaBovina u = new Vacca(); // costo 200
         assertFalse(gc.schiera(u, 0, 0));
         assertTrue(gc.getUnita().isEmpty());
@@ -106,7 +111,7 @@ class GameControllerTest {
 
         gc.tick();
         assertFalse(gc.getInsetti().contains(m));
-        assertEquals(fienoPrima + 25, gc.getBalleDiFieno(),
+        assertEquals(fienoPrima + GameController.FIENO_PER_KILL, gc.getBalleDiFieno(),
                 "uccidere un insetto deve regalare 25 fieno");
     }
 
@@ -122,11 +127,11 @@ class GameControllerTest {
     }
 
     @Test
-    void generazioneRisorseOgni150Tick() {
+    void generazioneRisorseAlTickConfigurato() {
         int fienoPrima = gc.getBalleDiFieno();
-        for (int i = 0; i < 150; i++) gc.tick();
-        // un solo trigger (+10) atteso nei primi 150 tick
-        assertEquals(fienoPrima + 10, gc.getBalleDiFieno());
+        for (int i = 0; i < GameController.TICK_GENERAZIONE; i++) gc.tick();
+        // un solo trigger di fieno passivo atteso nei primi TICK_GENERAZIONE tick
+        assertEquals(fienoPrima + GameController.FIENO_PASSIVO, gc.getBalleDiFieno());
     }
 
     @Test

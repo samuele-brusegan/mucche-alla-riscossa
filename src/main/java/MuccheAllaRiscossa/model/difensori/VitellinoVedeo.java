@@ -25,6 +25,7 @@ public class VitellinoVedeo extends UnitaBovina {
             100  // vita
         );
         this.dannoPerColpo = 20;
+        this.cooldownMax   = 9; // ~3 colpi/sec a 30 fps, abbastanza tempo per vedere la zampa
     }
 
     /** Vitellino spara una zampa di balsa verso destra nella sua corsia.*/
@@ -32,14 +33,16 @@ public class VitellinoVedeo extends UnitaBovina {
     public void attacca() {
         System.out.println("[" + nome + "] Sparo una " + arma + "! Danno: " + dannoPerColpo);
 
-        // creo il proiettile una cella avanti rispetto alla mia posizione
+        // sparo verso sx: i nemici arrivano da quella direzione, proiettile
+        // negativo che parte dalla mia stessa cella e attraversa la corsia.
         this.ultimoProiettile = new Proiettile(
                 dannoPerColpo,
-                1.0,           // velocita standard
+                -0.4,          // velocita verso sx (dx -> sx), lenta cosi e' visibile
                 riga,
-                colonna + 1,
+                colonna,
                 false          // colpisce solo il primo insetto
         );
+        this.proiettiliPronti.add(ultimoProiettile);
     }
 
     /** Restituisce l'ultimo proiettile creato (puo essere null se non ha ancora sparato) */

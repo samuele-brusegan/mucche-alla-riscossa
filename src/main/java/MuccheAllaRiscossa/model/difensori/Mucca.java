@@ -33,13 +33,14 @@ public class Mucca extends UnitaBovina {
     public void piazzaTrappola() {
         System.out.println("[" + nome + "] Boassa piazzata in colonna " + (colonna + 1) + "! Odore garanzia.");
 
-        // piazzo la boassa nella cella subito davanti a me
+        // piazzo la boassa SOTTO di me: il primo insetto che mi blocca la calpesta.
         this.ultimaTrappola = new BoassaEsplosiva(
                 dannoTrappola,
                 rallentamentoBoassa,
                 riga,
-                colonna + 1
+                colonna
         );
+        this.boassePronte.add(ultimaTrappola);
     }
 
     /** Restituisce l'ultima trappola piazzata (puo essere null) */

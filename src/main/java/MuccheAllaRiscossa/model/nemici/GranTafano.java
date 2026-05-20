@@ -17,12 +17,21 @@ public class GranTafano extends InsettoMutante {
     /** Contatore dei tick passati sotto terra */
     private int tickSotterraneo;
 
+    /** True dopo che il Tafano ha gia' scavato una volta: lo scavo e' un'abilita' "one-shot". */
+    private boolean haGiaScavato;
+
     public GranTafano(int riga) {
-        super(400, 0.3, riga);
+        // boss: tanta vita ma andatura lenta, cosi il giocatore ha tempo di reagire.
+        super(400, 0.025, riga);
         this.isSotterraneo   = false;
         this.saluteIniziale  = salute;
         this.tickSotterraneo = 0;
+        this.dannoMorso      = 25; // boss: morso devastante, mangia un Vedeo (100hp) in 4 tick
     }
+
+    /** Mentre e sotterraneo passa attraverso qualsiasi mucca: e' invulnerabile e invisibile. */
+    @Override
+    public boolean attraversaMucche() { return isSotterraneo; }
 
     /**
      * Override di avanza(): se la salute scende sotto il 50% e non e
@@ -34,17 +43,19 @@ public class GranTafano extends InsettoMutante {
         if (isSotterraneo) {
             tickSotterraneo++;
             if (tickSotterraneo >= 3) {
-                // riemerge avanzando di 2 colonne extra
+                // riemerge avanzando di 1 colonna extra (lo scavo non e piu un teleport devastante)
                 scava();
-                this.colonna += 2.0;
-                System.out.println("[GranTafano#" + id + "] Riemerso 2 colonne piu avanti!");
+                this.colonna += 1.0;
+                System.out.println("[GranTafano#" + id + "] Riemerso 1 colonna piu avanti!");
             }
             // mentre e sotto terra non si muove normalmente
             return;
         }
 
-        // se scende sotto meta vita e non si e ancora sotterrato, si sotterra
-        if (salute < saluteIniziale / 2 && salute > 0) {
+        // Sotto al 50% scava una sola volta in tutta la vita: dopo l'emersione
+        // resta in superficie fino alla morte (niente loop di immersioni continue).
+        if (!haGiaScavato && salute < saluteIniziale / 2 && salute > 0) {
+            haGiaScavato = true;
             scava();
             return;
         }

@@ -10,8 +10,9 @@ public class Moscone extends InsettoMutante {
     private int spessoreGuscioNoce;
 
     public Moscone(int riga) {
-        super(200, 0.2, riga);
+        super(200, 0.035, riga);
         this.spessoreGuscioNoce = 10;
+        this.dannoMorso = 12; // robusto e affamato
     }
 
     /** Riduce il danno in arrivo grazie al guscio. */

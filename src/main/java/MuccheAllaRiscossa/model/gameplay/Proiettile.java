@@ -40,7 +40,8 @@ public class Proiettile {
     public void muovi() {
         if (!attivo) return;
         this.colonna += velocita;
-        if (colonna >= Griglia.COLONNE) {
+        // si disattiva se esce dalla griglia in entrambe le direzioni
+        if (colonna >= Griglia.COLONNE || colonna < 0) {
             this.attivo = false;
         }
     }

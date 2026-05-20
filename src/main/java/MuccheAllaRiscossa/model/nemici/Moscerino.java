@@ -27,9 +27,10 @@ public class Moscerino extends InsettoMutante {
 
     /** Costruttore di test: permette di iniettare una sorgente deterministica. */
     public Moscerino(int riga, RandomSource random) {
-        super(25, 0.8, riga);
+        super(25, 0.13, riga);
         this.ampiezzaZigZag = 0.4;
         this.random = random;
+        this.dannoMorso = 4; // mordicchio fastidioso
     }
 
     /**
