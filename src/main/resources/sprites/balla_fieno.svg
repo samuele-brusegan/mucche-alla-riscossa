@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Balla di fieno rotonda (la "moneta" del gioco) -->
+  <ellipse cx="32" cy="56" rx="22" ry="4" fill="#000" opacity="0.2"/>
+  <circle cx="32" cy="34" r="24" fill="#e8c66a" stroke="#a07820" stroke-width="2"/>
+  <!-- fili di paglia in cerchio -->
+  <g stroke="#a07820" stroke-width="1" fill="none" stroke-linecap="round">
+    <path d="M14 22 Q32 18 50 22"/>
+    <path d="M12 30 Q32 26 52 30"/>
+    <path d="M12 38 Q32 34 52 38"/>
+    <path d="M14 46 Q32 42 50 46"/>
+  </g>
+  <!-- alcuni fili sbucanti -->
+  <path d="M10 28 L6 26 M54 32 L60 30 M16 50 L12 54 M48 50 L52 54" stroke="#a07820" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+</svg>

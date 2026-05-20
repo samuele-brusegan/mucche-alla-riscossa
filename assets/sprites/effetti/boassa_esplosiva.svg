@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Boassa esplosiva: cacca a chiocciola con miccia accesa -->
+  <ellipse cx="32" cy="55" rx="22" ry="4" fill="#000" opacity="0.25"/>
+  <!-- base -->
+  <ellipse cx="32" cy="48" rx="20" ry="8" fill="#5a3a18"/>
+  <!-- strato medio -->
+  <ellipse cx="32" cy="40" rx="15" ry="7" fill="#6a4a20"/>
+  <!-- strato alto -->
+  <ellipse cx="32" cy="32" rx="10" ry="6" fill="#7a5a28"/>
+  <!-- punta -->
+  <ellipse cx="32" cy="26" rx="5" ry="4" fill="#8a6a30"/>
+  <ellipse cx="32" cy="22" rx="2" ry="2" fill="#9a7a38"/>
+  <!-- riflessi appiccicosi -->
+  <ellipse cx="22" cy="46" rx="4" ry="1.6" fill="#8a6a30" opacity="0.7"/>
+  <ellipse cx="28" cy="38" rx="3" ry="1.4" fill="#9a7a38" opacity="0.7"/>
+  <!-- miccia -->
+  <path d="M32 22 Q34 14 40 12" stroke="#3a2a18" stroke-width="1.6" fill="none"/>
+  <!-- scintilla -->
+  <circle cx="40" cy="12" r="2.5" fill="#ffd54a"/>
+  <circle cx="40" cy="12" r="1.2" fill="#fff5b3"/>
+  <path d="M40 6 L40 2 M44 12 L48 12 M36 12 L32 12 M43 9 L46 6 M37 15 L34 18" stroke="#ffb000" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- mosconi attratti :) -->
+  <circle cx="14" cy="30" r="1.4" fill="#222"/>
+  <circle cx="50" cy="36" r="1.4" fill="#222"/>
+</svg>

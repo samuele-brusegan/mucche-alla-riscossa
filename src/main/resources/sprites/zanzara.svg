@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Zanzara: lunga, sottile, pungiglione, vola alta -->
+  <!-- ali trasparenti -->
+  <ellipse cx="22" cy="20" rx="10" ry="5" fill="#cfe8ff" opacity="0.55" stroke="#7aa6c4" stroke-width="0.6"/>
+  <ellipse cx="42" cy="20" rx="10" ry="5" fill="#cfe8ff" opacity="0.55" stroke="#7aa6c4" stroke-width="0.6"/>
+  <!-- corpo lungo -->
+  <ellipse cx="32" cy="34" rx="6" ry="14" fill="#5a4a2a"/>
+  <!-- striature addominali -->
+  <path d="M27 30 H37 M27 36 H37 M27 42 H37" stroke="#2a1a08" stroke-width="1"/>
+  <!-- testa -->
+  <circle cx="32" cy="22" r="5" fill="#3a2a1a"/>
+  <!-- occhi rossi -->
+  <circle cx="29" cy="21" r="1.6" fill="#c00"/>
+  <circle cx="35" cy="21" r="1.6" fill="#c00"/>
+  <!-- pungiglione -->
+  <line x1="32" y1="26" x2="32" y2="58" stroke="#3a2a1a" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="32,58 30,54 34,54" fill="#c00"/>
+  <!-- antenne -->
+  <path d="M30 18 Q26 12 24 14" stroke="#3a2a1a" stroke-width="1" fill="none"/>
+  <path d="M34 18 Q38 12 40 14" stroke="#3a2a1a" stroke-width="1" fill="none"/>
+  <!-- zampe sottili -->
+  <path d="M28 36 L18 44 M28 40 L16 50 M36 36 L46 44 M36 40 L48 50" stroke="#2a1a08" stroke-width="1" fill="none" stroke-linecap="round"/>
+</svg>

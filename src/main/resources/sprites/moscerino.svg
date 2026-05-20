@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Moscerino: piccolo, agile, schiva -->
+  <!-- scia di movimento (suggerisce evasione) -->
+  <path d="M8 32 Q14 28 20 32" stroke="#aaa" stroke-width="1" fill="none" opacity="0.5" stroke-dasharray="2,2"/>
+  <path d="M8 36 Q14 40 20 36" stroke="#aaa" stroke-width="1" fill="none" opacity="0.5" stroke-dasharray="2,2"/>
+  <!-- ali -->
+  <ellipse cx="26" cy="26" rx="8" ry="4" fill="#dfe6ed" opacity="0.7" stroke="#88a" stroke-width="0.6"/>
+  <ellipse cx="40" cy="26" rx="8" ry="4" fill="#dfe6ed" opacity="0.7" stroke="#88a" stroke-width="0.6"/>
+  <!-- corpo piccolo -->
+  <ellipse cx="34" cy="36" rx="9" ry="7" fill="#3a3a3a"/>
+  <ellipse cx="34" cy="34" rx="6" ry="3" fill="#5a5a5a"/>
+  <!-- testa -->
+  <circle cx="44" cy="34" r="5" fill="#2a2a2a"/>
+  <!-- occhio composito grosso -->
+  <circle cx="46" cy="33" r="3" fill="#c00"/>
+  <circle cx="47" cy="32" r="0.8" fill="#fff"/>
+  <!-- antennine -->
+  <path d="M46 30 Q50 26 51 28" stroke="#2a2a2a" stroke-width="0.8" fill="none"/>
+  <path d="M48 32 Q52 30 53 32" stroke="#2a2a2a" stroke-width="0.8" fill="none"/>
+  <!-- zampe -->
+  <path d="M30 42 L26 50 M34 42 L34 52 M38 42 L42 50" stroke="#1a1a1a" stroke-width="1" stroke-linecap="round"/>
+</svg>

@@ -5,6 +5,12 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
+import org.apache.batik.transcoder.TranscoderInput;
+import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.image.PNGTranscoder;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
@@ -39,15 +45,42 @@ public final class ResourceLoader {
     /* ---------- interni ---------- */
 
     private static Image caricaOplaceholder(String nome, Color fallback, char iniziale) {
-        String path = "/sprites/" + nome + ".png";
-        try (InputStream in = ResourceLoader.class.getResourceAsStream(path)) {
-            if (in != null) {
-                return new Image(in);
-            }
-        } catch (Exception ignored) {
-            // cade nel placeholder
-        }
+        // 1. Prova un PNG diretto.
+        try (InputStream in = ResourceLoader.class.getResourceAsStream("/sprites/" + nome + ".png")) {
+            if (in != null) return new Image(in);
+        } catch (Exception ignored) { /* cade nel ramo successivo */ }
+
+        // 2. Prova un SVG: lo transcodifichiamo in PNG via Batik (size 64x64).
+        try (InputStream in = ResourceLoader.class.getResourceAsStream("/sprites/" + nome + ".svg")) {
+            if (in != null) return svgToImage(in, 64f, 64f);
+        } catch (Exception ignored) { /* placeholder */ }
+
+        // 3. Placeholder colorato.
         return placeholder(fallback, iniziale);
+    }
+
+    /**
+     * Carica uno sprite SVG dal classpath ridimensionato a {@code w x h} px.
+     * Utile per asset che vanno disegnati in formati diversi (HUD, tile, sfondo).
+     */
+    public static Image svgScalato(String nome, double w, double h) {
+        String key = nome + "@" + (int) w + "x" + (int) h;
+        return CACHE.computeIfAbsent(key, k -> {
+            try (InputStream in = ResourceLoader.class.getResourceAsStream("/sprites/" + nome + ".svg")) {
+                if (in != null) return svgToImage(in, (float) w, (float) h);
+            } catch (Exception ignored) { /* placeholder */ }
+            return placeholder(Color.MAGENTA, '?');
+        });
+    }
+
+    /** Transcodifica un input stream SVG in {@link Image} JavaFX, alla dimensione data. */
+    private static Image svgToImage(InputStream svg, float w, float h) throws Exception {
+        PNGTranscoder t = new PNGTranscoder();
+        t.addTranscodingHint(PNGTranscoder.KEY_WIDTH,  w);
+        t.addTranscodingHint(PNGTranscoder.KEY_HEIGHT, h);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        t.transcode(new TranscoderInput(svg), new TranscoderOutput(out));
+        return new Image(new ByteArrayInputStream(out.toByteArray()));
     }
 
     /**

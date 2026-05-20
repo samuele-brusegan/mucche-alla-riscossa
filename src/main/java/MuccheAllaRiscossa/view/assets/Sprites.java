@@ -44,4 +44,29 @@ public final class Sprites {
             default           -> ResourceLoader.sprite("nemico",    Color.rgb(220, 20, 60),   '?');
         };
     }
+
+    /** Sprite del proiettile (zampa di balsa / vitello lanciato). */
+    public static Image proiettile() {
+        return ResourceLoader.sprite("proiettile", Color.YELLOW, '*');
+    }
+
+    /** Sprite della boassa esplosiva (trappola di Beatrice). */
+    public static Image boassa() {
+        return ResourceLoader.sprite("boassa", Color.rgb(80, 50, 20), 'B');
+    }
+
+    /** Tile d'erba per il fondo della corsia. Dimensione richiesta es. 80x80. */
+    public static Image erba(int w, int h) {
+        return ResourceLoader.svgScalato("erba", w, h);
+    }
+
+    /** Sprite della stalla da disegnare a fine corsia. */
+    public static Image stalla(int w, int h) {
+        return ResourceLoader.svgScalato("stalla", w, h);
+    }
+
+    /** Icona "balla di fieno" per l'HUD. */
+    public static Image ballaFieno(int w, int h) {
+        return ResourceLoader.svgScalato("balla_fieno", w, h);
+    }
 }

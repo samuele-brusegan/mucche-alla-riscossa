@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Mucche alla Riscossa - Sprite</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #1f2421; color: #f0e9d6; margin: 0; padding: 24px; }
+  h1 { margin: 0 0 8px; }
+  h2 { margin: 24px 0 8px; border-bottom: 1px solid #444; padding-bottom: 4px; }
+  .row { display: flex; gap: 18px; flex-wrap: wrap; }
+  .card { background: #2d3531; border-radius: 8px; padding: 12px; text-align: center; width: 140px; }
+  .card img { width: 96px; height: 96px; image-rendering: pixelated; background: #3a4540; border-radius: 6px; }
+  .card div { margin-top: 6px; font-size: 13px; opacity: .85; }
+  .scale { display: flex; gap: 6px; align-items: end; margin-top: 8px; justify-content: center; }
+  .scale img { background: #3a4540; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>Mucche alla Riscossa - sprite</h1>
+<p>SVG vettoriali (viewBox 64x64). Scalano a qualsiasi dimensione.</p>
+
+<h2>Difensori</h2>
+<div class="row">
+  <div class="card"><img src="difensori/vitellino_vedeo.svg"><div>VitellinoVedeo</div></div>
+  <div class="card"><img src="difensori/mucca.svg"><div>Mucca</div></div>
+  <div class="card"><img src="difensori/mucca_cornuta.svg"><div>MuccaCornuta</div></div>
+  <div class="card"><img src="difensori/vacca.svg"><div>Vacca</div></div>
+</div>
+
+<h2>Nemici</h2>
+<div class="row">
+  <div class="card"><img src="nemici/zanzara.svg"><div>Zanzara</div></div>
+  <div class="card"><img src="nemici/moscerino.svg"><div>Moscerino</div></div>
+  <div class="card"><img src="nemici/moscone.svg"><div>Moscone</div></div>
+  <div class="card"><img src="nemici/gran_tafano.svg"><div>GranTafano</div></div>
+</div>
+
+<h2>Effetti</h2>
+<div class="row">
+  <div class="card"><img src="effetti/proiettile.svg"><div>Proiettile</div></div>
+  <div class="card"><img src="effetti/boassa_esplosiva.svg"><div>BoassaEsplosiva</div></div>
+</div>
+
+<h2>Tile</h2>
+<div class="row">
+  <div class="card"><img src="tile/erba.svg"><div>Erba</div></div>
+  <div class="card"><img src="tile/balla_fieno.svg"><div>BallaDiFieno</div></div>
+  <div class="card"><img src="tile/stalla.svg"><div>Stalla</div></div>
+</div>
+
+<h2>Prova di scala</h2>
+<div class="scale">
+  <img src="difensori/mucca_cornuta.svg" width="32" height="32">
+  <img src="difensori/mucca_cornuta.svg" width="64" height="64">
+  <img src="difensori/mucca_cornuta.svg" width="96" height="96">
+  <img src="difensori/mucca_cornuta.svg" width="128" height="128">
+</div>
+</body>
+</html>
