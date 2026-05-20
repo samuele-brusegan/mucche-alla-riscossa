@@ -39,9 +39,10 @@ public class GameOverPanel extends VBox {
         btnRiprova.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         btnRiprova.setPrefSize(160, 45);
         btnRiprova.setOnAction(e -> {
-            // TODO: In futuro qui si potrebbe resettare lo stato del GameController
-            // prima di tornare al menu principale
-            window.mostraPannello("MENU");
+            // Resetta il singleton (stalla compresa) altrimenti il loop vedrebbe
+            // ancora isGameOver=true e tornerebbe subito su GAME_OVER.
+            MuccheAllaRiscossa.controller.GameController.getInstance().nuovaPartita();
+            window.mostraPannello("GAME");
         });
 
         getChildren().addAll(lblGameOver, lblDettaglio, btnRiprova);

@@ -39,7 +39,9 @@ public class MenuPanel extends VBox {
         Button btnGioca = new Button("GIOCA");
         btnGioca.setFont(Font.font("Arial", FontWeight.BOLD, 22));
         btnGioca.setPrefSize(180, 50);
-        btnGioca.setOnAction(e -> window.mostraPannello("GAME"));
+        // GIOCA porta al tutorial; lo stato viene resettato quando si preme INIZIA
+        // (o direttamente dal TutorialPanel).
+        btnGioca.setOnAction(e -> window.mostraPannello("TUTORIAL"));
 
         // Bottone "ESCI"
         Button btnEsci = new Button("ESCI");

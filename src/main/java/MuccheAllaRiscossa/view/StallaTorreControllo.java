@@ -65,4 +65,13 @@ public class StallaTorreControllo implements Observer {
 
     public void setOnFatalError(Runnable callback)  { this.onFatalError = callback; }
     public void setOnDannoSubito(Runnable callback) { this.onDannoSubito = callback; }
+
+    /**
+     * Ripristina lo stato della stalla a inizio partita (integrità 100, no fatal error).
+     * I callback installati da {@code Main} restano attivi.
+     */
+    public void reset() {
+        this.integritaSistema = 100;
+        this.fatalError = false;
+    }
 }

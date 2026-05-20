@@ -33,11 +33,14 @@ public class VittoriaPanel extends VBox {
         lblComplimenti.setFont(Font.font("Arial", FontWeight.BOLD, 16));
         lblComplimenti.setTextFill(Color.BLACK);
 
-        // Bottone per tornare al menu
+        // Bottone per tornare al menu (resetta lo stato per evitare di ripartire vincenti)
         Button btnMenu = new Button("Torna al Menu");
         btnMenu.setFont(Font.font("Arial", 18));
         btnMenu.setPrefSize(180, 45);
-        btnMenu.setOnAction(e -> window.mostraPannello("MENU"));
+        btnMenu.setOnAction(e -> {
+            MuccheAllaRiscossa.controller.GameController.getInstance().nuovaPartita();
+            window.mostraPannello("MENU");
+        });
 
         getChildren().addAll(lblVittoria, lblComplimenti, btnMenu);
     }

@@ -27,12 +27,14 @@ public final class Main extends Application {
 
         // 2. Istanziazione dei pannelli di gioco reali
         MenuPanel menuPanel = new MenuPanel(window);
+        TutorialPanel tutorialPanel = new TutorialPanel(window);
         GamePanel gamePanel = new GamePanel(window);
         GameOverPanel gameOverPanel = new GameOverPanel(window);
         VittoriaPanel vittoriaPanel = new VittoriaPanel(window);
 
         // 3. Registrazione dei pannelli nel container
         window.aggiungiPannello("MENU", menuPanel);
+        window.aggiungiPannello("TUTORIAL", tutorialPanel);
         window.aggiungiPannello("GAME", gamePanel);
         window.aggiungiPannello("GAME_OVER", gameOverPanel);
         window.aggiungiPannello("VITTORIA", vittoriaPanel);
