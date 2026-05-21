@@ -30,10 +30,10 @@ Una piaga di insetti mutanti minaccia la stalla. Sta a te schierare le unità bo
 Il progetto è organizzato secondo il pattern **MVC** con layout Maven standard:
 
 ```
-src/main/java/MuccheAllaRiscossa/
+src/main/java/io.github.samuelebrusegan.muccheallariscossa/
 ├── Main.java
 ├── controller/      # GameController (Singleton)
-├── view/            # StallaTorreControllo, SlideManager, pannelli Swing
+├── view/            # StallaTorreControllo, SlideManager, pannelli JavaFX
 ├── model/
 │   ├── difensori/   # Unità bovine
 │   ├── nemici/      # Insetti mutanti
@@ -55,7 +55,7 @@ Documentazione tecnica dettagliata della codebase in
 
 ## Build & Run
 
-Il progetto usa **Maven**. Servono JDK 21+ e Maven 3.9+.
+Il progetto usa **Maven** e **JavaFX 21** (con Batik per gli SVG). Servono JDK 21+ e Maven 3.9+.
 
 ```bash
 # Compilazione
@@ -65,7 +65,7 @@ mvn compile
 mvn test
 
 # Avvio del gioco
-mvn exec:java
+mvn javafx:run
 ```
 
 ## Continuous Integration
